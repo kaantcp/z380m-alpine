@@ -1,0 +1,224 @@
+#### EVIDENCE - terminal output from my own PC and tablet, October 2026.
+#### Content: Final build (rbswap z380term, 512 MiB image, boot image) + ls of the backup folders
+#### Device identifiers replaced by <REDACTED>: android serial number, ASUS ISN, MediaTek ME_ID, DA randomid, eMMC CID (two spellings).
+#### For publication the PC's user and host name, its home folder, the name of the USB network interface (it contains a MAC address), MAC addresses and the GPT partition GUIDs were also replaced (user@pc, /home/user, enxXXXXXXXXXXXX, xx:xx:xx:xx:xx:xx, <REDACTED>). Everything else is as printed. Escape characters in the text are shown as the visible sign for ESC.
+
+user@pc:~/z380m_v3$ cd ~/z380m_v3 &&
+cp ~/Downloads/z380term_rbswap.c z380term.c &&
+echo "f7fffa4b4fb0cf56f6880e4770ea318c789addf8691f300a6bf0ce9d240cb275  z380term.c" | sha256sum -c &&
+mv ~/linux_alpine_v3 ~/linux_alpine_v3_first_try &&
+sudo /usr/bin/python3 build_alpine_rootfs.py --size-mb 512 &&
+python3 build_boot_v3.py z380term.c ~/linux_alpine_v3 &&
+ls -l ~/linux_alpine_v3
+z380term.c: OK
+build_alpine_rootfs.py 1.0 -- Alpine 3.24.2 for the Z380M.  Nothing is flashed; the tablet is not touched.
+[   0s] [1/9] host checks
+        [OK  ] running as root
+        [OK  ] e2fsprogs 1.47.0 (mke2fs -d works)
+        [OK  ] binfmt_misc handler qemu-aarch64: interpreter /usr/libexec/qemu-binfmt/aarch64-binfmt-P, flags POF
+        [OK  ] qemu-aarch64-static found: /usr/bin/qemu-aarch64-static
+        [OK  ] z380term.c found, compiler aarch64-linux-gnu-gcc found
+        [OK  ] 381.8 GiB free for /home/user/linux_alpine_v3
+        [OK  ] minirootfs tarball /home/user/alpine/alpine-minirootfs-3.24.2-aarch64.tar.gz: hashes match the reference sha256 and the sha512 published in Alpine's docker-alpine repository
+        [OK  ] Alpine mirror via https: https://dl-cdn.alpinelinux.org/alpine/v3.24/main/aarch64/APKINDEX.tar.gz -> HTTP 200
+        [OK  ] Alpine mirror via http: http://dl-cdn.alpinelinux.org/alpine/v3.24/main/aarch64/APKINDEX.tar.gz -> HTTP 200
+[   1s] [2/9] unpacking the minirootfs into the work tree (/home/user/linux_alpine_v3/work-alpine-rootfs)
+        Alpine 3.24.2, aarch64 busybox, everything root-owned
+[   1s] [3/9] chroot self-test (through qemu-user) and apk dry run against the v3.24 aarch64 index
+        uname -m: aarch64 | /etc/alpine-release: 3.24.2 | apk-tools 3.0.8-r0, compiled for aarch64.
+        apk add --simulate: OK for 13 required + 8 optional packages
+[   7s] [4/9] installing packages (apk runs under qemu-user; expect several minutes)
+[   7s] apk add (required): openrc busybox-openrc busybox-mdev-openrc mdev-conf busybox-suid e2fsprogs e2fsprogs-extra iproute2 wpa_supplicant iw openssh ca-certificates tzdata
+        (10/45) Installing ca-certificates (20260909-r0)
+        (11/45) Installing libeconf (0.8.3-r0)
+        (12/45) Installing libblkid (2.42.3-r1)
+        (13/45) Installing libcom_err (1.47.4-r0)
+        (14/45) Installing e2fsprogs-libs (1.47.4-r0)
+        (15/45) Installing libuuid (2.42.3-r1)
+        (16/45) Installing e2fsprogs (1.47.4-r0)
+        (17/45) Installing e2fsprogs-extra (1.47.4-r0)
+        (18/45) Installing zstd-libs (1.5.7-r2)
+        (19/45) Installing libelf (0.195-r0)
+        (20/45) Installing libmnl (1.0.5-r2)
+        (21/45) Installing iproute2-minimal (7.0.0-r0)
+        (22/45) Installing ifupdown-ng-iproute2 (0.13.0-r0)
+        (23/45) Installing libxtables (1.8.13-r0)
+        (24/45) Installing iproute2-tc (7.0.0-r0)
+        (25/45) Installing iproute2-ss (7.0.0-r0)
+        (26/45) Installing iproute2 (7.0.0-r0)
+        (27/45) Installing libnl3 (3.11.0-r0)
+        (28/45) Installing iw (6.17-r0)
+        (29/45) Installing openssh-keygen (10.3_p1-r1)
+        (30/45) Installing ncurses-terminfo-base (6.6_p20260516-r0)
+        (31/45) Installing libncursesw (6.6_p20260516-r0)
+        (32/45) Installing libedit (20260508.3.1-r1)
+        (33/45) Installing openssh-client-common (10.3_p1-r1)
+        (34/45) Installing openssh-client-default (10.3_p1-r1)
+        (35/45) Installing openssh-sftp-server (10.3_p1-r1)
+        (36/45) Installing openssh-server-common (10.3_p1-r1)
+        (37/45) Installing openssh-server-common-openrc (10.3_p1-r1)
+        (38/45) Installing openssh-server (10.3_p1-r1)
+        (39/45) Installing openssh (10.3_p1-r1)
+        (40/45) Installing tzdata (2026e-r0)
+        (41/45) Installing dbus-libs (1.16.2-r2)
+        (42/45) Installing pcsc-lite-libs (2.4.0-r4)
+        (43/45) Installing wpa_supplicant (2.11-r4)
+        (44/45) Installing wpa_supplicant-openrc (2.11-r4)
+        (45/45) Installing ifupdown-ng-wifi (0.13.0-r0)
+        OK: 31.7 MiB in 61 packages
+[  17s] apk add (optional): nano htop bash curl strace evtest alpine-conf wireless-tools
+        (10/22) Installing libcurl (8.22.0-r0)
+        (11/22) Installing curl (8.22.0-r0)
+        (12/22) Installing evtest (1.36-r0)
+        (13/22) Installing lsof (4.99.6-r0)
+        (14/22) Installing htop (3.5.3-r0)
+        (15/22) Installing nano (9.2-r0)
+        (16/22) Installing libbz2 (1.0.8-r6)
+        (17/22) Installing musl-fts (1.2.7-r7)
+        (18/22) Installing xz-libs (5.8.4-r0)
+        (19/22) Installing libdw (0.195-r0)
+        (20/22) Installing strace (6.19-r1)
+        (21/22) Installing wireless-tools-libs (30_pre9-r5)
+        (22/22) Installing wireless-tools (30_pre9-r5)
+        OK: 43.9 MiB in 83 packages
+        83 packages installed (all 13 required ones present)
+[  23s] [5/9] z380term
+        z380term: static aarch64 ELF, sha256 a08f92eaf7e0f796e7a1e09ba87a9f353dd8fcc7b0e09ed1b215cbe13abcc0c4
+[  24s] [6/9] configuration
+        runlevel sysinit : devfs dmesg mdev
+        runlevel boot    : swclock hostname sysctl modules bootmisc syslog networking
+        runlevel shutdown: mount-ro killprocs
+[  24s] [7/9] checking the finished tree
+        tree OK (files, modes, shebangs, root ownership, locked root account, no emulator, empty /proc /sys /dev /tmp)
+        tree holds 44.9 MiB of file data
+[  24s] [8/9] building the ext4 image (536870912 bytes, sparse file)
+[  25s] [9/9] verifying the image, writing checksum
+        OK  size 536870912 bytes (limit 3745886208), multiple of 4096
+        OK  e2fsck -fn: clean (z380m-alpine: 1845/32768 files (0.1% non-contiguous), 16158/131072 blocks)
+        OK  features (all in the allow-list): dir_index dir_nlink ext_attr extent extra_isize filetype flex_bg has_journal huge_file large_file resize_inode sparse_super uninit_bg
+        OK  state clean, 4096-byte blocks, label z380m-alpine, default mount options none, journal features (none)
+        OK  marker inside the image: z380m-alpine | alpine 3.24.2 aarch64 | built 2026-10-10T22:48:38Z
+        OK  key files present, regular/symlink as expected, owned by root
+        OK  z380term inside the image: static ELF, right CPU type
+        OK  busybox inside the image: aarch64 ELF
+        OK  inittab inside the image has the console respawn entry
+
+DONE.
+  image   : /home/user/linux_alpine_v3/system_alpine.ext4
+  size    : 536870912 bytes (limit 3745886208)
+  sha256  : 77613db5c283e655f45611e3834ecd96a733d35f94e2d1483cde047c993d9a46
+  packages: 83 (list in /home/user/linux_alpine_v3/system_alpine.packages.txt)
+  Checked here: the image is a clean ext4 with only 3.18-safe features and the expected files.
+  NOT checked here (cannot be, on the PC): that the tablet's 3.18.35 kernel mounts it and that Alpine's aarch64 userland runs on that kernel.
+  Nothing was flashed.  Next, still PC-only: python3 build_boot_v3.py z380term.c /home/user/linux_alpine_v3
+compiled z380term: 598016 bytes, static, correct CPU type, sha256 a08f92eaf7e0f796e7a1e09ba87a9f353dd8fcc7b0e09ed1b215cbe13abcc0c4
+busybox: 1914704 bytes, all 28 required applets present; optional ones missing: blkid
+  (this reads BusyBox's applet name table; the real answer is 'busybox --list' in the rescue shell, z380m-probe prints it)
+kernel: 7472341 bytes, byte-identical to source
+cmdline: bootopt=64S3,32N2,64N2 build_version=3
+header: only the ramdisk size (offset 16) and the SHA1 (0x240) differ from the official boot image
+rescue window: 5 s
+old ramdisk: 2526176 bytes -> new ramdisk: 1277693 bytes (gz payload 1277181)
+image: 8753152 bytes, padded file: 16740352 bytes (partition 16740352)
+  bin                      0o40755  0
+  sbin                     0o40755  0
+  dev                      0o40755  0
+  proc                     0o40755  0
+  sys                      0o40755  0
+  tmp                      0o40755  0
+  etc                      0o40755  0
+  root                     0o40755  0
+  usr                      0o40755  0
+  usr/bin                  0o40755  0
+  mnt                      0o40755  0
+  newroot                  0o40755  0
+  bin/busybox              0o100755 1914704
+  bin/sh                   0o120777 7
+  bin/z380term             0o100755 598016
+  bin/shell-start          0o100755 782
+  bin/z380m-probe          0o100755 3615
+  bin/z380m-switch-test    0o100755 696
+  bin/retry-boot           0o100755 580
+  etc/switchtest-init      0o100755 529
+  etc/switchtest-shell     0o100755 304
+  init                     0o100755 16750
+  etc/passwd               0o100644 30
+  etc/group                0o100644 10
+  dev/console              0o20600  0
+  dev/null                 0o20666  0
+  dev/zero                 0o20666  0
+  dev/tty                  0o20666  0
+  dev/urandom              0o20666  0
+  dev/random               0o20666  0
+  dev/kmsg                 0o20600  0
+  dev/ptmx                 0o20666  0
+vs your v2 console image: kernel identical, header fields identical
+sha256 full: fbf826f8af73055953048788c18f9ed174abd0030590cfcaf84ebe5219ca2d16
+BUILD OK
+total 82200
+-rw-rw-r-- 1 user user  16740352 Oct 10 18:48 boot_alpine_full.bin
+-rw-rw-r-- 1 user user        87 Oct 10 18:48 boot_alpine_full.bin.sha256
+-rw-rw-r-- 1 user user   8753152 Oct 10 18:48 boot_alpine.img
+-rw-r--r-- 1 user user     25629 Oct 10 18:48 build_alpine_rootfs.log
+-rw-rw-r-- 1 user user     16750 Oct 10 18:48 init.sh
+-rw-r--r-- 1 user user 536870912 Oct 10 18:48 system_alpine.ext4
+-rw-r--r-- 1 user user        85 Oct 10 18:48 system_alpine.ext4.sha256
+-rw-r--r-- 1 user user      1795 Oct 10 18:48 system_alpine.packages.txt
+-rwxrwxr-x 1 user user    598016 Oct 10 18:48 z380term
+user@pc:~/z380m_v3$ ls -l ~/z380m_full_backup/ ~/official_ref/ ~/linux_console_v2/
+/home/user/linux_console_v2/:
+total 41784
+-rw-r--r-- 1 root root 16740352 Oct  4 21:12 boot_after.bin
+-rw-rw-r-- 1 user user 16740352 Oct  4 21:08 boot_linux_console_full.bin
+-rw-rw-r-- 1 user user  8747008 Oct  4 21:08 boot_linux_console.img
+-rw-rw-r-- 1 user user     3362 Oct  4 21:08 init.sh
+-rwxrwxr-x 1 user user   598016 Oct  4 21:08 z380term
+
+/home/user/official_ref/:
+total 38732
+-rw-rw-r-- 1 user user 10006784 Oct  4 19:33 boot.bin
+-rw-rw-r-- 1 user user 16740352 Oct  4 20:03 boot_full.bin
+-rw-rw-r-- 1 user user   418048 Oct  4 19:33 lk.bin
+-rw-r--r-- 1 user user   524288 Oct  4 19:58 lk_feb9_dump.bin
+-rw-rw-r-- 1 user user   524288 Oct  4 19:54 lk_full.bin
+-rw-rw-r-- 1 user user  1216768 Oct  4 19:33 logo.bin
+-rw-rw-r-- 1 user user   159232 Oct  4 19:33 preloader.bin
+-rw-rw-r-- 1 user user 11464960 Oct  4 19:33 recovery.bin
+-rw-rw-r-- 1 user user   135424 Oct  4 19:33 secro.bin
+-rw-rw-r-- 1 user user  2639360 Oct  4 19:33 tee1.bin
+-rw-rw-r-- 1 user user  2639360 Oct  4 19:33 tee2.bin
+
+/home/user/z380m_full_backup/:
+total 356004
+-rw-r--r-- 1 root root  33554432 Oct  4 16:57 ADF.bin
+-rw-r--r-- 1 root root 104857600 Oct  4 17:00 APD.bin
+-rw-r--r-- 1 root root   1048576 Oct  4 16:51 asus_nvm.bin
+-rw-r--r-- 1 root root  16740352 Oct  4 20:06 boot_after.bin
+-rw-r--r-- 1 root root  16740352 Oct  4 16:52 boot.bin
+-rw-r--r-- 1 root root   2097152 Oct  4 16:54 dkb.bin
+-rw-r--r-- 1 root root  10485760 Oct  4 16:54 expdb.bin
+-rw-r--r-- 1 root root  16777216 Oct  4 16:56 flashinfo.bin
+-rw-r--r-- 1 root root   1048576 Oct  4 16:54 frp.bin
+-rw-r--r-- 1 root root     16896 Oct  4 16:50 gpt_backup.bin
+-rw-r--r-- 1 root root     16896 Oct  4 16:50 gpt.bin
+-rw-r--r-- 1 root root       107 Oct  4 16:50 hwparam.json
+-rw-r--r-- 1 root root   2097152 Oct  4 16:54 kb.bin
+-rw-r--r-- 1 root root    524288 Oct  4 20:01 lk_after.bin
+-rw-r--r-- 1 root root    524288 Oct  4 16:52 lk.bin
+-rw-r--r-- 1 root root   8388608 Oct  4 16:53 logo.bin
+-rw-r--r-- 1 root root  33554432 Oct  4 16:55 metadata.bin
+-rw-r--r-- 1 root root   5242880 Oct  4 16:50 nvram.bin
+-rw-r--r-- 1 root root    524288 Oct  4 16:53 para.bin
+-rw-r--r-- 1 root root  33554432 Oct  4 16:52 persist.bin
+-rw-r--r-- 1 root root   4194304 Oct  4 19:48 preloader_boot1_after.bin
+-rw-r--r-- 1 root root   4194304 Oct  4 19:36 preloader_boot1.bin
+-rw-r--r-- 1 root root   3145728 Oct  4 16:50 proinfo.bin
+-rw-r--r-- 1 root root  10485760 Oct  4 16:50 protect1.bin
+-rw-r--r-- 1 root root  10485760 Oct  4 16:51 protect2.bin
+-rw-r--r-- 1 root root  16740352 Oct  4 16:53 recovery.bin
+-rw-r--r-- 1 root root    262144 Oct  4 16:52 seccfg.bin
+-rw-r--r-- 1 root root  16740352 Oct  4 16:53 secro.bin
+-rw-r--r-- 1 root root      8192 Oct  4 20:09 system_head.bin
+-rw-r--r-- 1 root root   5242880 Oct  4 16:54 tee1.bin
+-rw-r--r-- 1 root root   5242880 Oct  4 16:54 tee2.bin
+user@pc:~/z380m_v3$ 

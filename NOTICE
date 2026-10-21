@@ -1,0 +1,77 @@
+z380m-alpine - Alpine Linux on the ASUS ZenPad 8.0 (Z380M, MT8163)
+Copyright (C) 2026 kaantcp (https://github.com/kaantcp)
+
+LICENSE
+  This project is licensed under the GNU General Public License, version 3 only
+  (SPDX: GPL-3.0-only). The full text is in the file LICENSE.
+  Every source file written for the project carries the same copyright and license
+  notice in its first lines.
+
+  In short (a summary, not legal advice; the license text decides): you may use,
+  study, change and share this work. If you share it, in original or changed form,
+  you must keep these notices, say what you changed, and release your version under
+  the same license together with its source code. There is no warranty.
+
+FILES WITHOUT AN INLINE NOTICE (same license, GPL-3.0-only)
+  These files cannot carry a notice without being changed, and they must stay
+  byte-identical to what ran on the tablet or what the tests expect:
+
+  scripts/gui/console.sh.orig, console.sh.v1patched, console.sh.v2
+      verbatim copies of /etc/z380m/console.sh as it was on the tablet (test fixtures)
+  scripts/gui/console_block_a.txt, console_block_b.txt, installer/touchfix/zopt_block.txt
+      text blocks that are spliced into console.sh by the installers
+  installer/payload.list
+      list of the files that go into the desktop installer
+  src/z380term.c.diff
+      the difference between the original z380term.c and src/z380term_rbswap.c
+  installer/touchfix/z380m-touchbridge.arm64
+      machine code built from src/touchbridge/z380m-touchbridge.c with
+      src/touchbridge/build.sh. That source file and script are the "corresponding
+      source" of this binary. The build reproduces the binary byte for byte
+      (checked with Ubuntu clang 18.1.3).
+  dist/z380m_gui_paste.txt, dist/z380m_touchfix.sh
+      the two installer files. They are generated from the sources in this repository
+      (see docs/CHANGELOG.md). z380m_touchfix.sh contains the binary above.
+  dist/SHA256SUMS
+      checksums of those two files (a format that takes no comment lines)
+  evidence/*.txt
+      terminal logs from the real PC and tablet; personal identifiers removed
+  tests/logs/*.txt
+      output of the test runs (tests/logs/README.txt carries a notice)
+  LICENSE
+      the license text itself, unchanged
+
+  README.md, NOTICE, docs/*.md and the README.txt files carry a copyright and license
+  line in their first lines instead of the longer notice.
+
+PROVENANCE OF src/z380term_rbswap.c
+  z380term is the small program that draws the text console on the tablet screen.
+  The red/blue colour swap (option -n to switch it off) was added on 9 Oct 2026;
+  src/z380term.c.diff shows that change as it was made, before the license notice
+  and the credit line were added to the file. The font table in the file is described in the file's own
+  header as the koi8x16 font from the X11 cyrillic fonts, public domain; that statement
+  has not been verified independently.
+
+NOT IN THIS REPOSITORY, AND NOT TO BE ADDED
+  - Dumps or backups of any partition of a tablet (they hold data that is unique to
+    one device: calibration, serial numbers, keys, user data).
+  - ASUS firmware, the stock boot image, preloader and lk images.
+  - The built images. boot_alpine_full.bin contains ASUS's Linux kernel and a BusyBox
+    binary; system_alpine.ext4 contains many Alpine packages under many licenses.
+    Build them yourself with the scripts in src/.
+
+THIRD-PARTY SOFTWARE THAT THIS PROJECT USES (none of it is included)
+  mtkclient (https://github.com/bkerler/mtkclient) - GPL-3.0, by Bjoern Kerler and
+      contributors. Used on the PC to read and write the tablet's flash.
+  Linux kernel 3.18.35 - GPL-2.0. The ASUS kernel from the tablet's own boot image.
+  BusyBox - GPL-2.0. A static aarch64 build that you supply, packed into the boot
+      ramdisk by build_boot_v3.py; Alpine's own BusyBox runs the installed system.
+  Alpine Linux and its packages - each package has its own license; see the package
+      metadata (for example "apk info -L PACKAGE" or "apk info -a PACKAGE" on the tablet).
+      The root filesystem builder downloads them from Alpine's mirrors.
+  X.Org, JWM, svkbd, xterm, tcc and others are installed from Alpine's package
+      repositories; see their package metadata for their licenses.
+
+TRADEMARKS
+  ASUS, ZenPad, MediaTek, Android and Alpine Linux are trademarks of their owners.
+  This project is not affiliated with or endorsed by any of them.

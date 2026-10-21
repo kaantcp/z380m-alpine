@@ -1,0 +1,102 @@
+PASS  0 text console starts
+PASS  0 shell on the serial line answers
+PASS  1 start prints its message
+PASS  1 plain shell is announced
+PASS  1 Xorg is up
+PASS  1 session started
+PASS  1 the serial line has a working plain shell
+PASS  1 Xorg got the config, no TCP, verbose log
+PASS  1 no /dev/tty0 but /dev/tty1: Xorg is told vt1
+PASS  1 touch screen found by name, fixed symlink made
+PASS  1 session ran its X commands
+PASS  1 z380term is not running during the desktop
+PASS  1 lease file names a supervisor
+PASS  1 status says running
+PASS  1 watchdog gives the console back
+PASS  1 Xorg was stopped
+PASS  1 z380term restarted by init
+PASS  1 serial shell works again
+PASS  1 logs tell the story
+PASS  2 plain shell again
+PASS  2 Xorg up again
+PASS  2 keep is accepted
+PASS  2 desktop survives the watchdog time after keep
+PASS  2 status says confirmed
+PASS  2 stop is accepted
+PASS  2 stop gives the console back
+PASS  2 z380term restarted a third time
+PASS  2 serial shell works again
+PASS  3 failure is noticed and logged
+PASS  3 console comes back by itself
+PASS  3 serial shell works again
+PASS  4 desktop up
+PASS  4 text console is reclaimed
+PASS  4 serial shell works again
+PASS  4 orphan Xorg was killed
+PASS  5 boot start creates the guard
+PASS  5 desktop up in boot mode
+PASS  5 boot mode is in the log
+PASS  5 no watchdog in boot mode: desktop still up after 16 s
+PASS  5 guard is still there during the first minute
+PASS  5 guard is cleared once the desktop was stable for 60 s
+PASS  5 serial shell works next to the desktop
+PASS  5 stop in boot mode gives the console back
+PASS  5 serial shell works again
+PASS  6 boot start is skipped while the guard exists
+PASS  6 nothing was started
+PASS  6 status shows the guard
+PASS  6 boot-reset clears it
+PASS  7 boot-enable says so
+PASS  7 service file exists, is executable and OpenRC-style
+PASS  7 rc-update add was called
+PASS  7 service file parses as shell
+PASS  7 status mentions the service
+PASS  7 boot-disable removes it
+PASS  7 rc-update del was called
+PASS  8 fake /dev/tty0 made
+PASS  8 Xorg started again
+PASS  8 no vt argument when /dev/tty0 exists
+PASS  8 watchdog gives the console back
+PASS  8 serial shell works again
+PASS  9 desktop up
+PASS  9 restart-x is accepted
+PASS  9 Xorg and the session started a second time
+PASS  9 same supervisor, text console still off
+PASS  9 old Xorg was stopped first
+PASS  9 serial shell works
+PASS  9 stop gives the console back
+PASS  9 serial shell works again
+PASS  10 Xorg started
+PASS  10 LD_PRELOAD reached Xorg
+PASS  10 status shows the preload
+PASS  10 console is back after the watchdog
+PASS  11 fake driver list made
+PASS  11 /dev/tty0 was made
+PASS  11 it is a character device and no vt argument was given
+PASS  11 console is back after the watchdog
+PASS  11 serial shell works again
+PASS  12a no library installed: swapcolors refuses and changes nothing
+PASS  12b desktop off: colour fix switched on for the next start
+PASS  12c switched off again
+PASS  12d desktop up
+PASS  12e swapcolors on a running desktop restarts X with the library preloaded
+PASS  12f the answer is also shown in a small window on the desktop
+PASS  12g text console still off after the restart
+PASS  12h swapcolors again: off, X restarts without the library
+PASS  12i stop gives the console back
+PASS  12j serial shell works again
+PASS  13a failure noticed
+PASS  13b the preload file was removed and the log says so
+PASS  13c console comes back
+PASS  13d serial shell works again
+PASS  14a desktop up
+PASS  14b the colour test window is opened while first-run exists
+PASS  14c keep removes the first-run flag
+PASS  14d stop
+PASS  14e second start
+PASS  14f no colour test window without first-run
+PASS  14g console is back after the watchdog
+PASS  14h serial shell works again
+
+99 checks, 0 failed
+exit=0

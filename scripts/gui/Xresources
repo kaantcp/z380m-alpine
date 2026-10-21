@@ -1,0 +1,38 @@
+! SPDX-License-Identifier: GPL-3.0-only
+! Copyright (C) 2026 kaantcp (https://github.com/kaantcp)
+!
+! Part of z380m-alpine: Alpine Linux on the ASUS ZenPad 8.0 (Z380M, MT8163).
+!
+! This program is free software: you can redistribute it and/or modify it
+! under the terms of the GNU General Public License as published by the
+! Free Software Foundation, version 3 of the License.
+!
+! This program is distributed in the hope that it will be useful, but
+! WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+! or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+! for more details. You should have received a copy of the GNU General
+! Public License along with this program (file LICENSE). If not, see
+! <https://www.gnu.org/licenses/>.
+
+! /etc/z380m/gui/Xresources - merged into the X server by session.sh
+Xft.dpi: 150
+Xft.antialias: 1
+Xft.hinting: 1
+Xft.hintstyle: hintslight
+Xft.rgba: none
+
+XTerm*faceName: DejaVu Sans Mono
+XTerm*faceSize: 11
+XTerm*utf8: 1
+XTerm*saveLines: 3000
+XTerm*scrollBar: true
+XTerm*rightScrollBar: true
+XTerm*scrollbar.width: 34
+XTerm*scrollTtyOutput: false
+XTerm*selectToClipboard: true
+XTerm*termName: xterm-256color
+XTerm*cursorBlink: false
+XTerm*background: #0d1117
+XTerm*foreground: #e6edf3
+Z380m.author: kaantcp
+Z380m.url: https://github.com/kaantcp

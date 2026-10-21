@@ -1,0 +1,2 @@
+fbfix host test: all checks passed
+exit=0

@@ -1,0 +1,28 @@
+PASS  dist/SHA256SUMS lists z380m_gui_paste.txt correctly
+PASS  dist/SHA256SUMS lists z380m_touchfix.sh correctly
+PASS  paste file: ASCII only, no TAB, no CR
+PASS  touch fix: ASCII only, no TAB, no CR
+PASS  paste file: base64 block found
+PASS  paste file: the checksum in its guard is the checksum of the base64 text
+PASS  paste file: holds the 13 files named in installer/payload.list
+PASS  paste file: Xresources == scripts/gui/Xresources
+PASS  paste file: console_block_a.txt == scripts/gui/console_block_a.txt
+PASS  paste file: console_block_b.txt == scripts/gui/console_block_b.txt
+PASS  paste file: fbfix.c == installer/shim/fbfix.c
+PASS  paste file: install.sh == installer/install.sh
+PASS  paste file: jwmrc == scripts/gui/jwmrc
+PASS  paste file: patch_console.sh == scripts/gui/patch_console.sh
+PASS  paste file: session.sh == scripts/gui/session.sh
+PASS  paste file: xorg.conf == scripts/gui/xorg.conf
+PASS  paste file: z380m-bright == scripts/gui/z380m-bright
+PASS  paste file: z380m-colortest == scripts/gui/z380m-colortest
+PASS  paste file: z380m-gui == scripts/obsolete/z380m-gui.v1
+PASS  paste file: z380m-kbd == scripts/gui/z380m-kbd
+PASS  paste file: carries the credit line
+PASS  touch fix: the bridge program == installer/touchfix/z380m-touchbridge.arm64
+PASS  touch fix: z380m-gui (version 2) == scripts/gui/z380m-gui
+PASS  touch fix: the code == installer/touchfix/touchfix_template.sh (placeholders filled)
+PASS  touch fix: carries the credit line
+PASS  the bridge program carries the credit line
+
+26 checks, 0 failed

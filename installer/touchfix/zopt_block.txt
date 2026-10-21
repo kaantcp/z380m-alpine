@@ -1,0 +1,4 @@
+  # after the desktop has run, mtkfb uses the pixel format that X asked for, so z380term must not swap red and blue any more
+  # (/run/z380m-fb-panned is made by z380m-gui when it starts X; it is gone after a reboot, when the bootloader's format is back)
+  ZOPT=; [ -e /run/z380m-fb-panned ] && ZOPT=-n
+  if [ -n "$SER" ]; then "$Z" $ZOPT -s "$SER" -- /bin/sh -l 2>> $LOG; else "$Z" $ZOPT -- /bin/sh -l 2>> $LOG; fi

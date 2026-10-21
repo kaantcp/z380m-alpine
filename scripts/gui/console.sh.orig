@@ -1,0 +1,43 @@
+#!/bin/sh
+# z380m console -- respawned forever by BusyBox init (::respawn: in /etc/inittab).
+# z380term draws a terminal on the tablet screen (/dev/fb0), mirrors it to the USB serial line (/dev/ttyGS0 here,
+# /dev/ttyACM0 on the PC) and runs a root shell on a pty.  If z380term keeps dying, a plain shell on the serial line is
+# offered instead so the system is never left without a way in.
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+TERM=linux
+HOME=/root
+SHELL=/bin/sh
+export PATH TERM HOME SHELL
+Z=/usr/local/bin/z380term
+LOG=/var/log/z380m-console.log
+
+up() { u=0; [ -r /proc/uptime ] && read -r u _ < /proc/uptime; echo "${u%%.*}"; }
+
+SER=
+w=0
+while [ -z "$SER" ] && [ $w -le 3 ]; do
+  for c in /dev/ttyGS0 /dev/ttyGS1; do
+    [ -c $c ] && { SER=$c; break; }
+  done
+  [ -n "$SER" ] || { sleep 1; w=$((w+1)); }
+done
+
+t0=$(up)
+if [ -x "$Z" ]; then
+  if [ -n "$SER" ]; then "$Z" -s "$SER" -- /bin/sh -l 2>> $LOG; else "$Z" -- /bin/sh -l 2>> $LOG; fi
+  rc=$?
+else
+  rc=127
+  echo "[$t0] z380term is missing ($Z)" >> $LOG
+fi
+t1=$(up)
+echo "[$t1] z380term exited with status $rc after $((t1-t0)) s (serial line: ${SER:-none})" >> $LOG
+
+if [ $((t1-t0)) -lt 5 ]; then
+  if [ -n "$SER" ]; then
+    echo "[$t1] z380term fails fast: plain shell on $SER" >> $LOG
+    setsid -c /bin/sh -l < $SER > $SER 2>&1
+  fi
+  sleep 5
+fi
+exit 0

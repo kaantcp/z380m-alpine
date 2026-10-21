@@ -1,0 +1,80 @@
+wrote <work>/tf/fix_ok.sh 22267 bytes
+bridge 701 bytes sha256 810e5bcac67d39c3e61cdac7252f9e176c295ef403be5dcf18a8a3febaa1c1e7
+gui    18716 bytes sha256 fd7caa39c6bae863a60e9c5ff3dbb2d5dd78540860fab23ef5b317ebdbba65f9
+script sha256 14c28f1674ff10973f33c74da8e97e50d64b3ba52e4e62ec648f25a05383977d
+== S1: normal install, corners as expected -> no mirroring
+PASS  S1.1 exit 0
+PASS  S1.2 bridge installed, identical to the payload
+PASS  S1.3 z380m-gui v2 installed, identical to the pack file
+PASS  S1.4 both are executable
+PASS  S1.5 z380m-gui.v1 is the old file
+PASS  S1.6 console.sh.v1 is the old console.sh
+PASS  S1.7 console.sh is now exactly console.sh.v2
+PASS  S1.8 console.sh is executable and parses
+PASS  S1.9 touch.flags empty
+PASS  S1.10 output says flags none
+PASS  S1.11 output shows the six steps
+PASS  S1.12 no .new files, no temp dir left
+PASS  S1.13 xorg.flags untouched
+PASS  S1.14 log written
+PASS  S1.15 says desktop not started in test mode
+== S2: both axes mirrored
+PASS  S2.1 exit 0 and flags -x -y
+== S3: only x, only y
+PASS  S3.1 flags -x
+PASS  S3.2 flags -y
+== S4: corners too close together
+PASS  S4.1 exit 0, warns twice, no flags
+== S5: second run changes nothing (idempotent), backups stay the originals
+PASS  S5.1 second run exit 0
+PASS  S5.2 backups still the original files
+PASS  S5.3 console.sh still exactly v2 (not patched twice)
+PASS  S5.4 said so
+PASS  S5.5 flags follow the newest test (none)
+== S6: damaged file -> nothing installed
+PASS  S6.1 exit 1 and says damaged
+PASS  S6.2 nothing changed
+PASS  S6.3 told that nothing was changed
+== S7: desktop running -> refuses
+PASS  S7.1 exit 1, says the desktop is running
+PASS  S7.2 nothing changed
+== S7b: stale pid file is not 'running'
+PASS  S7b.1 proceeds
+== S8: uinput check fails
+PASS  S8.1 exit 1 with the message
+PASS  S8.2 no corner test was asked, no flags file
+PASS  S8.3 says how to undo
+== S8b: the program does not run at all
+PASS  S8b.1 exit 1, says it does not run
+== S9: the panel sends nothing
+PASS  S9.1 exit 1, no touch seen, diagnostics requested
+PASS  S9.2 no flags written, no desktop
+PASS  S9.3 second corner silent -> same stop
+== S10: console.sh has a line we do not know -> warn, go on
+PASS  S10.1 exit 0, warning, console.sh unchanged
+== S11: undo
+PASS  S11.1 exit 0
+PASS  S11.2 old z380m-gui and console.sh are back, byte for byte
+PASS  S11.3 bridge and flags gone, backups consumed
+PASS  S11.4 a second undo does no harm
+PASS  S11.5 install again after undo works
+PASS  S11.6 undo refuses while the desktop runs
+== S12: not the tablet (no test mode) -> wrong window, nothing done
+PASS  S12.1 exit 1, WRONG WINDOW, nothing changed
+== S13: preconditions
+PASS  S13.1 no z380m-gui -> stop
+PASS  S13.2 no Xorg -> stop
+PASS  S13.3 no xorg.conf -> stop
+PASS  S13.4 unknown argument -> stop
+== S14: z380m-gui is version 2 already and no .v1 exists -> no .v1 made
+PASS  S14.1 no z380m-gui.v1 made, install ok
+== S15: console.sh missing
+PASS  S15.1 warns and goes on
+== S16: a line count check on the output (short and readable)
+PASS  S16.1 the normal run prints fewer than 60 lines
+PASS  S16.2 the script is ASCII only, no TAB, no CR
+PASS  S16.3 the code part parses with dash and with bash --posix
+== S17: a bash run of the same scenario S2 (second shell)
+PASS  S17.1 same result in bash --posix
+
+RESULT: 55 passed, 0 failed

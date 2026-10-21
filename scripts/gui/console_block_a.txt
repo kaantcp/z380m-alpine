@@ -1,0 +1,11 @@
+# --- z380m GUI mode (added for z380m-gui): while the supervisor named in /run/z380m-gui is alive, X owns /dev/fb0
+# and z380term must stay off. When the supervisor is gone, the text console starts as usual.
+if [ -s /run/z380m-gui ]; then
+  echo "[$(up)] GUI mode: waiting for the GUI supervisor (pid $(cat /run/z380m-gui))" >> $LOG
+  while [ -s /run/z380m-gui ] && kill -0 "$(cat /run/z380m-gui)" 2>/dev/null; do sleep 1; done
+  [ -s /run/z380m-serial-shell.pid ] && kill -9 "$(cat /run/z380m-serial-shell.pid)" 2>/dev/null
+  killall Xorg 2>/dev/null
+  rm -f /run/z380m-gui /run/z380m-serial-shell.pid
+  echo "[$(up)] GUI mode over" >> $LOG
+fi
+# --- end of GUI mode

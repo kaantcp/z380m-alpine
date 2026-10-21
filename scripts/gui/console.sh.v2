@@ -1,0 +1,60 @@
+#!/bin/sh
+# z380m console -- respawned forever by BusyBox init (::respawn: in /etc/inittab).
+# z380term draws a terminal on the tablet screen (/dev/fb0), mirrors it to the USB serial line (/dev/ttyGS0 here,
+# /dev/ttyACM0 on the PC) and runs a root shell on a pty.  If z380term keeps dying, a plain shell on the serial line is
+# offered instead so the system is never left without a way in.
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+TERM=linux
+HOME=/root
+SHELL=/bin/sh
+export PATH TERM HOME SHELL
+Z=/usr/local/bin/z380term
+LOG=/var/log/z380m-console.log
+
+up() { u=0; [ -r /proc/uptime ] && read -r u _ < /proc/uptime; echo "${u%%.*}"; }
+
+SER=
+w=0
+while [ -z "$SER" ] && [ $w -le 3 ]; do
+  for c in /dev/ttyGS0 /dev/ttyGS1; do
+    [ -c $c ] && { SER=$c; break; }
+  done
+  [ -n "$SER" ] || { sleep 1; w=$((w+1)); }
+done
+
+# --- z380m GUI mode (added for z380m-gui): while the supervisor named in /run/z380m-gui is alive, X owns /dev/fb0
+# and z380term must stay off. When the supervisor is gone, the text console starts as usual.
+if [ -s /run/z380m-gui ]; then
+  echo "[$(up)] GUI mode: waiting for the GUI supervisor (pid $(cat /run/z380m-gui))" >> $LOG
+  while [ -s /run/z380m-gui ] && kill -0 "$(cat /run/z380m-gui)" 2>/dev/null; do sleep 1; done
+  [ -s /run/z380m-serial-shell.pid ] && kill -9 "$(cat /run/z380m-serial-shell.pid)" 2>/dev/null
+  killall Xorg 2>/dev/null
+  rm -f /run/z380m-gui /run/z380m-serial-shell.pid
+  echo "[$(up)] GUI mode over" >> $LOG
+fi
+# --- end of GUI mode
+t0=$(up)
+if [ -x "$Z" ]; then
+  # after the desktop has run, mtkfb uses the pixel format that X asked for, so z380term must not swap red and blue any more
+  # (/run/z380m-fb-panned is made by z380m-gui when it starts X; it is gone after a reboot, when the bootloader's format is back)
+  ZOPT=; [ -e /run/z380m-fb-panned ] && ZOPT=-n
+  if [ -n "$SER" ]; then "$Z" $ZOPT -s "$SER" -- /bin/sh -l 2>> $LOG; else "$Z" $ZOPT -- /bin/sh -l 2>> $LOG; fi
+  rc=$?
+else
+  rc=127
+  echo "[$t0] z380term is missing ($Z)" >> $LOG
+fi
+t1=$(up)
+echo "[$t1] z380term exited with status $rc after $((t1-t0)) s (serial line: ${SER:-none})" >> $LOG
+# --- z380m GUI mode (added for z380m-gui): z380term was stopped on purpose by z380m-gui; skip the "fails fast" fallback below
+if [ -s /run/z380m-gui ] && kill -0 "$(cat /run/z380m-gui)" 2>/dev/null; then exit 0; fi
+# --- end of GUI mode
+
+if [ $((t1-t0)) -lt 5 ]; then
+  if [ -n "$SER" ]; then
+    echo "[$t1] z380term fails fast: plain shell on $SER" >> $LOG
+    setsid -c /bin/sh -l < $SER > $SER 2>&1
+  fi
+  sleep 5
+fi
+exit 0

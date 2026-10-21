@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-only
+Copyright (C) 2026 kaantcp (https://github.com/kaantcp)
+
+Part of z380m-alpine: Alpine Linux on the ASUS ZenPad 8.0 (Z380M, MT8163).
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, version 3 of the License.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+for more details. You should have received a copy of the GNU General
+Public License along with this program (file LICENSE). If not, see
+<https://www.gnu.org/licenses/>.
+-->
+
+<!-- /etc/z380m/gui/jwmrc - JWM for the Z380M touch screen (800x1280 portrait, about 190 ppi).
+     Everything is sized for fingers: sizes are pixels. Change the numbers, then tap Menu > Restart. -->
+<JWM>
+
+    <!-- Tap the desktop background or the Menu button. -->
+    <RootMenu onroot="1" height="64">
+        <Program label="Keyboard on/off">z380m-kbd</Program>
+        <Program label="Terminal">xterm</Program>
+        <Separator/>
+        <Program label="KEEP this desktop">z380m-gui keep</Program>
+        <Program label="About z380m-alpine">xterm -title "z380m-alpine" -e sh -c "echo; echo '  z380m-alpine by kaantcp'; echo '  https://github.com/kaantcp'; echo; sleep 30"</Program>
+        <Menu label="Display" height="64">
+            <Program label="Colour check">xterm -class ColorTest -title "Colour check" -e z380m-colortest</Program>
+            <Program label="Fix colours (swap red/blue)">z380m-gui swapcolors</Program>
+            <Program label="Brighter">z380m-bright up</Program>
+            <Program label="Dimmer">z380m-bright down</Program>
+            <Program label="Restart X">z380m-gui restart-x</Program>
+        </Menu>
+        <Separator/>
+        <Restart label="Reload this menu and bar"/>
+        <Exit label="Back to the text console" confirm="false"/>
+        <Exit label="Reboot the tablet" confirm="true">reboot</Exit>
+        <Exit label="Power off" confirm="true">poweroff</Exit>
+    </RootMenu>
+
+    <!-- Every normal window opens maximized: the screen is small. (Docks such as the on-screen keyboard are left alone.) -->
+    <Group>
+        <Type>normal</Type>
+        <Option>maximized</Option>
+    </Group>
+
+    <!-- The bar at the bottom. A button is as wide as its label (JWM ignores a width on a text button), so the labels are padded with no-break spaces (JWM trims ordinary spaces from a value). -->
+    <Tray x="0" y="-1" height="72" autohide="off" layout="horizontal">
+        <TrayButton label="   Menu   ">root:1</TrayButton>
+        <TrayButton label="   Keys   ">exec:z380m-kbd</TrayButton>
+        <TrayButton label="   Term   ">exec:xterm</TrayButton>
+        <TaskList maxwidth="240"/>
+        <Dock/>
+        <Clock format="%H:%M" width="110"/>
+    </Tray>
+
+    <WindowStyle decorations="flat">
+        <Font>DejaVu Sans:pixelsize=26</Font>
+        <Width>8</Width>
+        <Height>52</Height>
+        <Corner>0</Corner>
+        <Foreground>#c9d1d9</Foreground>
+        <Background>#2b3440</Background>
+        <Opacity>1.0</Opacity>
+        <Active>
+            <Foreground>#ffffff</Foreground>
+            <Background>#2f6fb3</Background>
+            <Opacity>1.0</Opacity>
+        </Active>
+    </WindowStyle>
+
+    <TrayStyle decorations="flat">
+        <Font>DejaVu Sans:pixelsize=28</Font>
+        <Background>#0f1720</Background>
+        <Foreground>#e8eef5</Foreground>
+        <Opacity>1.0</Opacity>
+    </TrayStyle>
+
+    <TrayButtonStyle>
+        <Font>DejaVu Sans:pixelsize=28</Font>
+        <Background>#223041</Background>
+        <Foreground>#ffffff</Foreground>
+        <Active>
+            <Foreground>#ffffff</Foreground>
+            <Background>#2f6fb3</Background>
+        </Active>
+    </TrayButtonStyle>
+
+    <TaskListStyle list="all" group="false">
+        <Font>DejaVu Sans:pixelsize=24</Font>
+        <Active>
+            <Foreground>#ffffff</Foreground>
+            <Background>#2f6fb3</Background>
+        </Active>
+        <Foreground>#c9d1d9</Foreground>
+        <Background>#223041</Background>
+    </TaskListStyle>
+
+    <ClockStyle>
+        <Font>DejaVu Sans:pixelsize=26</Font>
+        <Foreground>#e8eef5</Foreground>
+        <Background>#0f1720</Background>
+    </ClockStyle>
+
+    <MenuStyle decorations="flat">
+        <Font>DejaVu Sans:pixelsize=30</Font>
+        <Foreground>#e8eef5</Foreground>
+        <Background>#17212c</Background>
+        <Active>
+            <Foreground>#ffffff</Foreground>
+            <Background>#2f6fb3</Background>
+        </Active>
+        <Opacity>1.0</Opacity>
+    </MenuStyle>
+
+    <PopupStyle>
+        <Font>DejaVu Sans:pixelsize=24</Font>
+        <Foreground>#000000</Foreground>
+        <Background>#e6e6a0</Background>
+    </PopupStyle>
+
+    <Desktops width="1" height="1">
+        <Background type="solid">#1b2838</Background>
+    </Desktops>
+
+    <!-- A finger needs more room than a mouse for a double tap. -->
+    <DoubleClickSpeed>500</DoubleClickSpeed>
+    <DoubleClickDelta>40</DoubleClickDelta>
+    <FocusModel>click</FocusModel>
+    <SnapMode distance="0">none</SnapMode>
+    <MoveMode>opaque</MoveMode>
+    <ResizeMode>opaque</ResizeMode>
+
+</JWM>

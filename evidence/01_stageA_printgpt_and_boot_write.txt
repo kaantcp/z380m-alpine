@@ -1,0 +1,410 @@
+#### EVIDENCE - terminal output from my own PC and tablet, October 2026.
+#### Content: Stage A: sha check, live printgpt (GPT table), write of boot, read-back + cmp (WRITE-VERIFIED)
+#### Device identifiers replaced by <REDACTED>: android serial number, ASUS ISN, MediaTek ME_ID, DA randomid, eMMC CID (two spellings).
+#### For publication the PC's user and host name, its home folder, the name of the USB network interface (it contains a MAC address), MAC addresses and the GPT partition GUIDs were also replaced (user@pc, /home/user, enxXXXXXXXXXXXX, xx:xx:xx:xx:xx:xx, <REDACTED>). Everything else is as printed. Escape characters in the text are shown as the visible sign for ESC.
+
+user@pc:~/z380m_v3$ cd ~/linux_alpine_v3
+echo "fbf826f8af73055953048788c18f9ed174abd0030590cfcaf84ebe5219ca2d16  boot_alpine_full.bin" | sha256sum -c
+ls -l boot_alpine_full.bin
+cmp ~/linux_console_v2/boot_linux_console_full.bin ~/linux_console_v2/boot_after.bin && echo "boot_after.bin is identical to the v2 image"
+boot_alpine_full.bin: OK
+-rw-rw-r-- 1 user user 16740352 Oct 10 18:48 boot_alpine_full.bin
+boot_after.bin is identical to the v2 image
+user@pc:~/linux_alpine_v3$ cd "$HOME/Downloads/unlock (3)/mtkclient"
+sudo /usr/bin/python3 mtk.py printgpt
+Preloader - Status: Waiting for PreLoader VCOM, please reconnect mobile/iot device to brom mode
+
+Port - Hint:
+
+Power off the phone before connecting.
+For brom mode, press and hold vol up, vol dwn, or all hw buttons and connect usb.
+For preloader mode, don't press any hw button and connect usb.
+If it is already connected and on, hold power for 10 seconds to reset.
+
+
+...........
+
+Port - Hint:
+
+Power off the phone before connecting.
+For brom mode, press and hold vol up, vol dwn, or all hw buttons and connect usb.
+For preloader mode, don't press any hw button and connect usb.
+If it is already connected and on, hold power for 10 seconds to reset.
+
+
+...........
+
+Port - Hint:
+
+Power off the phone before connecting.
+For brom mode, press and hold vol up, vol dwn, or all hw buttons and connect usb.
+For preloader mode, don't press any hw button and connect usb.
+If it is already connected and on, hold power for 10 seconds to reset.
+
+
+...........
+
+Port - Hint:
+
+Power off the phone before connecting.
+For brom mode, press and hold vol up, vol dwn, or all hw buttons and connect usb.
+For preloader mode, don't press any hw button and connect usb.
+If it is already connected and on, hold power for 10 seconds to reset.
+
+
+...........
+
+Port - Hint:
+
+Power off the phone before connecting.
+For brom mode, press and hold vol up, vol dwn, or all hw buttons and connect usb.
+For preloader mode, don't press any hw button and connect usb.
+If it is already connected and on, hold power for 10 seconds to reset.
+
+
+Port - Device detected :)
+Preloader - 	CPU:			MT8163()
+Preloader - 	HW version:		0x0
+Preloader - 	WDT:			0x10007000
+Preloader - 	Uart:			0x11002000
+Preloader - 	Brom payload addr:	0x100a00
+Preloader - 	DA payload addr:	0x201000
+Preloader - 	CQ_DMA addr:		0x10212c00
+Preloader - 	Var1:			0xb1
+Preloader - Disabling Watchdog...
+Preloader - HW code:			0x8163
+Preloader - Target config:		0x1
+Preloader - 	SBC enabled:		True
+Preloader - 	SLA enabled:		False
+Preloader - 	DAA enabled:		False
+Preloader - 	SWJTAG enabled:		False
+Preloader - 	EPP_PARAM at 0x600 after EMMC_BOOT/SDMMC_BOOT:	False
+Preloader - 	Root cert required:	False
+Preloader - 	Mem read auth:		False
+Preloader - 	Mem write auth:		False
+Preloader - 	Cmd 0xC8 blocked:	False
+Preloader - Get Target info
+Preloader - BROM mode detected.
+Preloader - 	HW subcode:		0x8a00
+Preloader - 	HW Ver:			0xcb00
+Preloader - 	SW Ver:			0x1
+Preloader - ME_ID:			<REDACTED>
+DaHandler - Device is protected.
+DaHandler - Device is in BROM-Mode. Bypassing security.
+PLTools - Loading payload from mt8163_payload.bin, 0x258 bytes
+Exploitation - Kamakiri Run
+Exploitation - Done sending payload...
+PLTools - Successfully sent payload: /home/user/Downloads/unlock (3)/mtkclient/mtkclient/payloads/mt8163_payload.bin
+Port - Device detected :)
+DaHandler
+DaHandler - [LIB]: Device is in BROM mode. No preloader given, trying to dump preloader from ram.
+DALegacy - Uploading legacy da...
+DALegacy - Uploading legacy stage 1 from MTK_DA_V5.bin
+LegacyExt - Legacy DA2 is patched.
+LegacyExt - Legacy DA2 CMD F0 is patched.
+LegacyExt
+LegacyExt - [LIB]: Legacy Read is normal.
+Preloader - Jumping to 0x200000
+Preloader - Jumping to 0x200000: ok.
+DALegacy - Got loader sync !
+DALegacy - Reading nand info
+DALegacy - Reading emmc info
+DALegacy - ACK: 0402a1
+DALegacy - Setting stage 2 config ...
+DALegacy - DRAM config needed for : <REDACTED>
+DALegacy - Reading dram nand info ...
+DALegacy - Sending dram info ... EMI-Version 0x10
+DALegacy - RAM-Length: 0xbc
+DALegacy - Checksum: 14C6
+DALegacy - M_EXT_RAM_RET : 0
+DALegacy - M_EXT_RAM_TYPE : 0x2
+DALegacy - M_EXT_RAM_CHIP_SELECT : 0x0
+DALegacy - M_EXT_RAM_SIZE : 0x40000000
+DALegacy - Uploading stage 2...
+Progress: |██████████| 100.0% Stage 2: (0x3E398/0x3E398), 212.46 KB/s  
+DALegacy - Waiting for response ...
+DALegacy - Successfully uploaded stage 2
+DALegacy - Connected to stage2
+DALegacy - Reconnecting to stage2 with higher speed
+DeviceClass - [Errno 2] Entity not found
+DALegacy - Connected to stage2 with higher speed
+DALegacy - m_int_sram_ret = 0x0
+m_int_sram_size = 0x40000
+m_ext_ram_ret = 0x0
+m_ext_ram_type = 0x2
+m_ext_ram_chip_select = 0x0
+m_int_sram_ret = 0x0
+m_ext_ram_size = 0x40000000
+randomid = <REDACTED>
+
+DALegacy - m_emmc_ret = 0x0
+m_emmc_boot1_size = 0x400000
+m_emmc_boot2_size = 0x400000
+m_emmc_rpmb_size = 0x400000
+m_emmc_gp_size[0] = 0x0
+m_emmc_gp_size[1] = 0x0
+m_emmc_gp_size[2] = 0x0
+m_emmc_gp_size[3] = 0x0
+m_emmc_ua_size = 0x3ab400000
+m_emmc_cid = <REDACTED>
+m_emmc_fwver = a400000000000000
+
+Main - Handling da commands ...
+
+GPT Table:
+-------------
+proinfo:             Offset 0x0000000000080000, Length 0x0000000000300000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+nvram:               Offset 0x0000000000380000, Length 0x0000000000500000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+protect1:            Offset 0x0000000000880000, Length 0x0000000000a00000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+protect2:            Offset 0x0000000001280000, Length 0x0000000000a00000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+asus_nvm:            Offset 0x0000000001c80000, Length 0x0000000000100000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+persist:             Offset 0x0000000001d80000, Length 0x0000000002000000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+seccfg:              Offset 0x0000000003d80000, Length 0x0000000000040000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+lk:                  Offset 0x0000000003dc0000, Length 0x0000000000080000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+boot:                Offset 0x0000000003e40000, Length 0x0000000000ff7000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+recovery:            Offset 0x0000000004e37000, Length 0x0000000000ff7000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+secro:               Offset 0x0000000005e2e000, Length 0x0000000000ff7000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+para:                Offset 0x0000000006e25000, Length 0x0000000000080000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+logo:                Offset 0x0000000006ea5000, Length 0x0000000000800000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+expdb:               Offset 0x00000000076a5000, Length 0x0000000000a00000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+frp:                 Offset 0x00000000080a5000, Length 0x0000000000100000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+tee1:                Offset 0x00000000081a5000, Length 0x0000000000500000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+tee2:                Offset 0x00000000086a5000, Length 0x0000000000500000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+kb:                  Offset 0x0000000008ba5000, Length 0x0000000000200000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+dkb:                 Offset 0x0000000008da5000, Length 0x0000000000200000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+metadata:            Offset 0x0000000008fa5000, Length 0x0000000002000000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+flashinfo:           Offset 0x000000000afa5000, Length 0x0000000001000000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+ADF:                 Offset 0x000000000bfa5000, Length 0x0000000002000000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+APD:                 Offset 0x000000000dfa5000, Length 0x0000000006400000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+cache:               Offset 0x00000000143a5000, Length 0x000000000c800000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+system:              Offset 0x0000000020ba5000, Length 0x00000000dfc00000, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+userdata:            Offset 0x00000001007a5000, Length 0x00000002aac56e00, Flags 0x0000000000000000, UUID <REDACTED>, Type EFI_BASIC_DATA
+
+Total disk size:0x00000003ab400000, sectors:0x0000000001d5a000
+
+user@pc:~/Downloads/unlock (3)/mtkclient$ sudo /usr/bin/python3 mtk.py w boot ~/linux_alpine_v3/boot_alpine_full.bin
+Preloader - Status: Waiting for PreLoader VCOM, please reconnect mobile/iot device to brom mode
+
+Port - Hint:
+
+Power off the phone before connecting.
+For brom mode, press and hold vol up, vol dwn, or all hw buttons and connect usb.
+For preloader mode, don't press any hw button and connect usb.
+If it is already connected and on, hold power for 10 seconds to reset.
+
+
+...........
+
+Port - Hint:
+
+Power off the phone before connecting.
+For brom mode, press and hold vol up, vol dwn, or all hw buttons and connect usb.
+For preloader mode, don't press any hw button and connect usb.
+If it is already connected and on, hold power for 10 seconds to reset.
+
+
+...Port - Device detected :)
+Preloader - 	CPU:			MT8163()
+Preloader - 	HW version:		0x0
+Preloader - 	WDT:			0x10007000
+Preloader - 	Uart:			0x11002000
+Preloader - 	Brom payload addr:	0x100a00
+Preloader - 	DA payload addr:	0x201000
+Preloader - 	CQ_DMA addr:		0x10212c00
+Preloader - 	Var1:			0xb1
+Preloader - Disabling Watchdog...
+Preloader - HW code:			0x8163
+Preloader - Target config:		0x1
+Preloader - 	SBC enabled:		True
+Preloader - 	SLA enabled:		False
+Preloader - 	DAA enabled:		False
+Preloader - 	SWJTAG enabled:		False
+Preloader - 	EPP_PARAM at 0x600 after EMMC_BOOT/SDMMC_BOOT:	False
+Preloader - 	Root cert required:	False
+Preloader - 	Mem read auth:		False
+Preloader - 	Mem write auth:		False
+Preloader - 	Cmd 0xC8 blocked:	False
+Preloader - Get Target info
+Preloader - BROM mode detected.
+Preloader - 	HW subcode:		0x8a00
+Preloader - 	HW Ver:			0xcb00
+Preloader - 	SW Ver:			0x1
+Preloader - ME_ID:			<REDACTED>
+DaHandler - Device is protected.
+DaHandler - Device is in BROM-Mode. Bypassing security.
+PLTools - Loading payload from mt8163_payload.bin, 0x258 bytes
+Exploitation - Kamakiri Run
+Exploitation - Done sending payload...
+PLTools - Successfully sent payload: /home/user/Downloads/unlock (3)/mtkclient/mtkclient/payloads/mt8163_payload.bin
+Port - Device detected :)
+DaHandler
+DaHandler - [LIB]: Device is in BROM mode. No preloader given, trying to dump preloader from ram.
+DALegacy - Uploading legacy da...
+DALegacy - Uploading legacy stage 1 from MTK_DA_V5.bin
+LegacyExt - Legacy DA2 is patched.
+LegacyExt - Legacy DA2 CMD F0 is patched.
+LegacyExt
+LegacyExt - [LIB]: Legacy Read is normal.
+Preloader - Jumping to 0x200000
+Preloader - Jumping to 0x200000: ok.
+DALegacy - Got loader sync !
+DALegacy - Reading nand info
+DALegacy - Reading emmc info
+DALegacy - ACK: 0402a1
+DALegacy - Setting stage 2 config ...
+DALegacy - DRAM config needed for : <REDACTED>
+DALegacy - Reading dram nand info ...
+DALegacy - Sending dram info ... EMI-Version 0x10
+DALegacy - RAM-Length: 0xbc
+DALegacy - Checksum: 14C6
+DALegacy - M_EXT_RAM_RET : 0
+DALegacy - M_EXT_RAM_TYPE : 0x2
+DALegacy - M_EXT_RAM_CHIP_SELECT : 0x0
+DALegacy - M_EXT_RAM_SIZE : 0x40000000
+DALegacy - Uploading stage 2...
+Progress: |██████████| 100.0% Stage 2: (0x3E398/0x3E398), 225.19 KB/s  
+DALegacy - Waiting for response ...
+DALegacy - Successfully uploaded stage 2
+DALegacy - Connected to stage2
+DALegacy - Reconnecting to stage2 with higher speed
+DeviceClass - [Errno 2] Entity not found
+DALegacy - Connected to stage2 with higher speed
+DALegacy - m_int_sram_ret = 0x0
+m_int_sram_size = 0x40000
+m_ext_ram_ret = 0x0
+m_ext_ram_type = 0x2
+m_ext_ram_chip_select = 0x0
+m_int_sram_ret = 0x0
+m_ext_ram_size = 0x40000000
+randomid = <REDACTED>
+
+DALegacy - m_emmc_ret = 0x0
+m_emmc_boot1_size = 0x400000
+m_emmc_boot2_size = 0x400000
+m_emmc_rpmb_size = 0x400000
+m_emmc_gp_size[0] = 0x0
+m_emmc_gp_size[1] = 0x0
+m_emmc_gp_size[2] = 0x0
+m_emmc_gp_size[3] = 0x0
+m_emmc_ua_size = 0x3ab400000
+m_emmc_cid = <REDACTED>
+m_emmc_fwver = a400000000000000
+
+Main - Handling da commands ...
+Progress: |██████████| 100.0% Write: (0xFF7000/0xFF7000), 7.02 MB/s  s left 
+Wrote /home/user/linux_alpine_v3/boot_alpine_full.bin to sector 127488 with sector count 32696.
+user@pc:~/Downloads/unlock (3)/mtkclient$ sudo /usr/bin/python3 mtk.py ro 0x3e40000 0xff7000 ~/linux_alpine_v3/boot_readback.bin
+cmp ~/linux_alpine_v3/boot_readback.bin ~/linux_alpine_v3/boot_alpine_full.bin && echo WRITE-VERIFIED
+Preloader - Status: Waiting for PreLoader VCOM, please reconnect mobile/iot device to brom mode
+
+Port - Hint:
+
+Power off the phone before connecting.
+For brom mode, press and hold vol up, vol dwn, or all hw buttons and connect usb.
+For preloader mode, don't press any hw button and connect usb.
+If it is already connected and on, hold power for 10 seconds to reset.
+
+
+...........
+
+Port - Hint:
+
+Power off the phone before connecting.
+For brom mode, press and hold vol up, vol dwn, or all hw buttons and connect usb.
+For preloader mode, don't press any hw button and connect usb.
+If it is already connected and on, hold power for 10 seconds to reset.
+
+
+...........
+Port - Device detected :)
+Preloader - 	CPU:			MT8163()
+Preloader - 	HW version:		0x0
+Preloader - 	WDT:			0x10007000
+Preloader - 	Uart:			0x11002000
+Preloader - 	Brom payload addr:	0x100a00
+Preloader - 	DA payload addr:	0x201000
+Preloader - 	CQ_DMA addr:		0x10212c00
+Preloader - 	Var1:			0xb1
+Preloader - Disabling Watchdog...
+Preloader - HW code:			0x8163
+Preloader - Target config:		0x1
+Preloader - 	SBC enabled:		True
+Preloader - 	SLA enabled:		False
+Preloader - 	DAA enabled:		False
+Preloader - 	SWJTAG enabled:		False
+Preloader - 	EPP_PARAM at 0x600 after EMMC_BOOT/SDMMC_BOOT:	False
+Preloader - 	Root cert required:	False
+Preloader - 	Mem read auth:		False
+Preloader - 	Mem write auth:		False
+Preloader - 	Cmd 0xC8 blocked:	False
+Preloader - Get Target info
+Preloader - BROM mode detected.
+Preloader - 	HW subcode:		0x8a00
+Preloader - 	HW Ver:			0xcb00
+Preloader - 	SW Ver:			0x1
+Preloader - ME_ID:			<REDACTED>
+DaHandler - Device is protected.
+DaHandler - Device is in BROM-Mode. Bypassing security.
+PLTools - Loading payload from mt8163_payload.bin, 0x258 bytes
+Exploitation - Kamakiri Run
+Exploitation - Done sending payload...
+PLTools - Successfully sent payload: /home/user/Downloads/unlock (3)/mtkclient/mtkclient/payloads/mt8163_payload.bin
+Port - Device detected :)
+DaHandler
+DaHandler - [LIB]: Device is in BROM mode. No preloader given, trying to dump preloader from ram.
+DALegacy - Uploading legacy da...
+DALegacy - Uploading legacy stage 1 from MTK_DA_V5.bin
+LegacyExt - Legacy DA2 is patched.
+LegacyExt - Legacy DA2 CMD F0 is patched.
+LegacyExt
+LegacyExt - [LIB]: Legacy Read is normal.
+Preloader - Jumping to 0x200000
+Preloader - Jumping to 0x200000: ok.
+DALegacy - Got loader sync !
+DALegacy - Reading nand info
+DALegacy - Reading emmc info
+DALegacy - ACK: 0402a1
+DALegacy - Setting stage 2 config ...
+DALegacy - DRAM config needed for : <REDACTED>
+DALegacy - Reading dram nand info ...
+DALegacy - Sending dram info ... EMI-Version 0x10
+DALegacy - RAM-Length: 0xbc
+DALegacy - Checksum: 14C6
+DALegacy - M_EXT_RAM_RET : 0
+DALegacy - M_EXT_RAM_TYPE : 0x2
+DALegacy - M_EXT_RAM_CHIP_SELECT : 0x0
+DALegacy - M_EXT_RAM_SIZE : 0x40000000
+DALegacy - Uploading stage 2...
+Progress: |██████████| 100.0% Stage 2: (0x3E398/0x3E398), 229.27 KB/s  
+DALegacy - Waiting for response ...
+DALegacy - Successfully uploaded stage 2
+DALegacy - Connected to stage2
+DALegacy - Reconnecting to stage2 with higher speed
+DeviceClass - [Errno 2] Entity not found
+DALegacy - Connected to stage2 with higher speed
+DALegacy - m_int_sram_ret = 0x0
+m_int_sram_size = 0x40000
+m_ext_ram_ret = 0x0
+m_ext_ram_type = 0x2
+m_ext_ram_chip_select = 0x0
+m_int_sram_ret = 0x0
+m_ext_ram_size = 0x40000000
+randomid = <REDACTED>
+
+DALegacy - m_emmc_ret = 0x0
+m_emmc_boot1_size = 0x400000
+m_emmc_boot2_size = 0x400000
+m_emmc_rpmb_size = 0x400000
+m_emmc_gp_size[0] = 0x0
+m_emmc_gp_size[1] = 0x0
+m_emmc_gp_size[2] = 0x0
+m_emmc_gp_size[3] = 0x0
+m_emmc_ua_size = 0x3ab400000
+m_emmc_cid = <REDACTED>
+m_emmc_fwver = a400000000000000
+
+Main - Handling da commands ...
+Progress: |██████████| 100.0% Read: (0xFF7000/0xFF7000), 490.85 KB/s  s left 
+Dumped offset 0x3e40000 with length 0xff7000 as /home/user/linux_alpine_v3/boot_readback.bin.
+WRITE-VERIFIED
+user@pc:~/Downloads/unlock (3)/mtkclient$ 

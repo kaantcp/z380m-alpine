@@ -1,0 +1,21 @@
+== I1: the real run (probe through z380m-gui touchtest, then the supervisor starts the desktop)
+PASS  I1.1 script exit 0
+PASS  I1.2 the probe ran twice with -t 10 on the real panel node
+PASS  I1.3 flags are -x (top-left had the large x) 
+PASS  I1.4 z380m-gui is version 2, the old one is kept
+PASS  I1.5 supervisor started by the script
+PASS  I1.6 the bridge was started with the saved flag
+PASS  I1.7 X got -sharevts once and vt1
+PASS  I1.8 z380m-touch points at the virtual device
+PASS  I1.9 the display-format flag exists
+PASS  I1.10 status shows version 2 and the flags
+PASS  I1.11 the script's output has the final hints
+== I2: back to the text console; console.sh starts z380term without the swap
+PASS  I2.1 supervisor gone
+PASS  I2.2 z380term was started with -n (the flag file exists)
+PASS  I2.3 without the flag file z380term gets no -n
+== I3: undo through the real files
+PASS  I3.1 undo exit 0, old z380m-gui and console.sh are back
+PASS  I3.2 bridge gone, flags gone
+
+RESULT: 16 passed, 0 failed

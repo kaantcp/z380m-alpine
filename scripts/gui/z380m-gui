@@ -1,0 +1,401 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2026 kaantcp (https://github.com/kaantcp)
+#
+# Part of z380m-alpine: Alpine Linux on the ASUS ZenPad 8.0 (Z380M, MT8163).
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+# for more details. You should have received a copy of the GNU General
+# Public License along with this program (file LICENSE). If not, see
+# <https://www.gnu.org/licenses/>.
+
+Z380M_CREDIT="z380m-alpine by kaantcp - https://github.com/kaantcp"
+
+# z380m-gui - start and stop the graphical desktop (Xorg on /dev/fb0 + JWM) on the Z380M tablet.
+#
+#   z380m-gui start [SECONDS]   test run. The desktop comes up on the tablet screen. Unless you confirm with
+#                               "z380m-gui keep" (or Menu > KEEP this desktop on the tablet) within SECONDS (default 240),
+#                               it goes back to the text console by itself.
+#   z380m-gui keep              confirm: the desktop stays until "z380m-gui stop" (or a reboot)
+#   z380m-gui stop              back to the text console now
+#   z380m-gui restart-x         restart X and the desktop without giving the screen back (after a config change)
+#   z380m-gui swapcolors        switch the red/blue fix on or off (the screen shows red and blue swapped), then restart X
+#   z380m-gui status            what is running
+#   z380m-gui report            everything needed to diagnose a problem; also saved to /root/gui-report.txt
+#   z380m-gui boot-enable       start the desktop automatically at every boot (OpenRC service "z380m-gui")
+#   z380m-gui boot-disable      do not start it at boot any more
+#   z380m-gui boot-reset        clear the boot guard (see below)
+#   z380m-gui touchtest [SECONDS]  show what the touch panel sends (read-only; works with or without the desktop)
+#
+# While the desktop runs, z380term (the text console on the screen) is off and the USB serial line gives a plain root shell.
+# Nothing here writes to flash. A reboot returns to the text console unless boot-enable was used.
+# Boot guard: at boot the desktop is only started if the previous automatic start was not left unfinished (a hang or a power
+# cut during the first minute). Then /etc/z380m/gui/boot-guard exists and the text console is used until "boot-reset".
+# Hooks: /etc/z380m/gui/xorg.flags (extra Xorg arguments), /etc/z380m/gui/preload (a library for LD_PRELOAD of Xorg),
+#        /etc/z380m/gui/session.local (extra commands for the session),
+#        /etc/z380m/gui/touch.flags (options for z380m-touchbridge: -x / -y mirror an axis),
+#        /etc/z380m/gui/no-bridge (if this file exists, X uses the touch panel directly, without the bridge).
+# Version 2: the touch bridge (the panel only speaks the multitouch protocol, which Xorg's evdev driver cannot use), the
+#        stand-in virtual terminal for kernels without VT support (-sharevts), and the flag that tells the text console that X has
+#        changed the display format (z380term must not swap red/blue any more).
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+SELF=/usr/local/sbin/z380m-gui
+CONF=/etc/z380m/gui
+LOG=/var/log/z380m-gui.log
+XLOG=/var/log/Xorg.0.log
+FLAG=/run/z380m-gui
+KEEP=/run/z380m-gui-keep
+STOP=/run/z380m-gui-stop
+RESTART=/run/z380m-gui-restart
+SHPID=/run/z380m-serial-shell.pid
+GUARD=$CONF/boot-guard
+DISP=:0
+VERSION=2
+BRIDGE=/usr/local/bin/z380m-touchbridge
+BRPID=/run/z380m-touchbridge.pid
+TFLAGS=$CONF/touch.flags
+PANNED=/run/z380m-fb-panned
+# test hooks (unset on the tablet): where the input nodes, the sysfs input class, the tty nodes and the uinput node live
+DEVIN=${Z380M_DEV_INPUT:-/dev/input}
+SYSIN=${Z380M_SYS_INPUT:-/sys/class/input}
+TTYDIR=${Z380M_TTYDIR:-/dev}
+UINPUT=${Z380M_UINPUT:-/dev/uinput}
+
+up() { u=; [ -r /proc/uptime ] && read -r u _ < /proc/uptime; echo "${u:-?}"; }
+log() { echo "[$(up)] $*" >> $LOG; }
+alive() { [ -s "$1" ] && kill -0 "$(cat "$1")" 2>/dev/null; }
+# print a message, and also show it in a small window when the desktop is up (for commands started from the menu)
+notify() {
+  echo "z380m-gui: $*"
+  if [ -S /tmp/.X11-unix/X0 ] && command -v xterm > /dev/null 2>&1; then
+    DISPLAY=$DISP xterm -geometry 48x6 -title "z380m" -e sh -c 'echo; echo "  $1"; sleep 8' sh "$*" > /dev/null 2>&1 &
+  fi
+}
+
+# the real touch panel: the first input device with "touch" in its name (never the virtual one made by the bridge)
+real_touch() {
+  rt=
+  for rd in $SYSIN/event*; do
+    [ -r "$rd/device/name" ] || continue
+    rn=$(cat "$rd/device/name" 2>/dev/null)
+    case "$rn" in z380m-*) continue ;; esac
+    case "$rn" in *[Tt]ouch*) rt=${rd##*/}; break ;; esac
+  done
+  [ -n "$rt" ] || rt=event11
+  echo "$rt"
+}
+
+# there is no devtmpfs here: make $DEVIN/eventN from sysfs when mdev has not done it
+make_input_node() {
+  [ -c "$DEVIN/$1" ] && return 0
+  mn=$(cat "$SYSIN/$1/dev" 2>/dev/null)
+  [ -n "$mn" ] || return 1
+  mkdir -p "$DEVIN" 2>/dev/null
+  mknod "$DEVIN/$1" c "${mn%:*}" "${mn#*:}" 2>/dev/null
+  [ -c "$DEVIN/$1" ]
+}
+
+stop_bridge() {
+  bp=; [ -s $BRPID ] && bp=$(cat $BRPID)
+  rm -f $BRPID
+  [ -n "$bp" ] || return 0
+  kill "$bp" 2>/dev/null || return 0
+  n=0; while kill -0 "$bp" 2>/dev/null && [ $n -lt 10 ]; do sleep 0.2; n=$((n+1)); done
+  kill -0 "$bp" 2>/dev/null && kill -9 "$bp" 2>/dev/null
+  return 0
+}
+
+# The panel only speaks the multitouch protocol, which Xorg's evdev driver cannot use. The bridge turns it into an ordinary touch
+# screen (a virtual device) and $DEVIN/z380m-touch points at that one; without the bridge it points at the panel itself.
+find_touch() {
+  tdev=$(real_touch)
+  mkdir -p "$DEVIN" 2>/dev/null
+  make_input_node "$tdev" || log "touch panel node $DEVIN/$tdev is missing"
+  log "touch panel: $DEVIN/$tdev"
+  stop_bridge
+  killall z380m-touchbridge 2>/dev/null
+  if [ -x $BRIDGE ] && [ ! -e $CONF/no-bridge ]; then
+    if [ ! -c "$UINPUT" ]; then
+      um=$(cat /sys/class/misc/uinput/dev 2>/dev/null)
+      [ -n "$um" ] && mknod "$UINPUT" c "${um%:*}" "${um#*:}" 2>/dev/null
+    fi
+    tfl=; [ -r $TFLAGS ] && tfl=$(cat $TFLAGS)
+    $BRIDGE run -i "$DEVIN/$tdev" $tfl >> $LOG 2>&1 &
+    bpid=$!
+    echo $bpid > $BRPID
+    vdev=; n=0
+    while [ $n -lt 30 ]; do
+      for vd in $SYSIN/event*; do
+        [ -r "$vd/device/name" ] || continue
+        [ "$(cat "$vd/device/name" 2>/dev/null)" = z380m-virtual-touch ] && { vdev=${vd##*/}; break; }
+      done
+      [ -n "$vdev" ] && break
+      kill -0 $bpid 2>/dev/null || break
+      sleep 0.2; n=$((n+1))
+    done
+    if [ -n "$vdev" ] && make_input_node "$vdev"; then
+      ln -sf "$DEVIN/$vdev" "$DEVIN/z380m-touch"
+      log "touch bridge up (pid $bpid): $DEVIN/$vdev  flags:${tfl:- none}"
+      return 0
+    fi
+    log "touch bridge did not come up; using the panel directly"
+    stop_bridge
+  else
+    log "no touch bridge installed; using the panel directly"
+  fi
+  ln -sf "$DEVIN/$tdev" "$DEVIN/z380m-touch"
+}
+
+# Xorg needs a virtual terminal. The stock Z380M kernel has none (no vtmaster in /proc/tty/drivers). Then Xorg is started with
+# -sharevts (it does no VT switching at all) and tty1 is a stand-in that can be opened (a link to /dev/null).
+# With real virtual terminals the device nodes are made when mdev has not done it (there is no devtmpfs here).
+ensure_vt_nodes() {
+  NOVT=
+  if grep -q vtmaster "${Z380M_TTY_DRIVERS:-/proc/tty/drivers}" 2>/dev/null; then
+    i=0
+    while [ $i -le 7 ]; do
+      [ -c $TTYDIR/tty$i ] || { mknod $TTYDIR/tty$i c 4 $i 2>/dev/null && log "made $TTYDIR/tty$i"; }
+      i=$((i+1))
+    done
+    return 0
+  fi
+  NOVT=1
+  if [ "$(readlink $TTYDIR/tty1 2>/dev/null)" != /dev/null ]; then
+    rm -f $TTYDIR/tty1
+    ln -s /dev/null $TTYDIR/tty1
+    log "no virtual terminals in the kernel: $TTYDIR/tty1 is a stand-in (link to /dev/null), Xorg gets -sharevts"
+  fi
+}
+
+stop_x() {
+  [ -n "$SPID" ] && kill "$SPID" 2>/dev/null
+  if [ -n "$XPID" ]; then
+    kill "$XPID" 2>/dev/null
+    n=0; while kill -0 "$XPID" 2>/dev/null && [ $n -lt 6 ]; do sleep 1; n=$((n+1)); done
+    kill -9 "$XPID" 2>/dev/null
+  fi
+  SPID=; XPID=
+  stop_bridge
+  rm -f /tmp/.X11-unix/X0 /tmp/.X0-lock
+}
+
+revert() {
+  log "going back to the text console"
+  stop_x
+  if alive $SHPID; then kill -9 "$(cat $SHPID)" 2>/dev/null; fi
+  rm -f $SHPID $KEEP $STOP $RESTART
+  rm -f $GUARD 2>/dev/null
+  rm -f $FLAG
+  log "done"
+}
+
+# starts Xorg and the session; returns 1 if X does not come up
+start_x() {
+  rm -f /tmp/.X11-unix/X0 /tmp/.X0-lock
+  find_touch
+  ensure_vt_nodes
+  XFLAGS=; [ -r $CONF/xorg.flags ] && XFLAGS=$(cat $CONF/xorg.flags)
+  # a kernel without virtual terminals: share the (stand-in) VT, no switching
+  if [ -n "$NOVT" ]; then
+    case " $XFLAGS " in *" -sharevts "*) ;; *) XFLAGS="$XFLAGS -sharevts" ;; esac
+  fi
+  PRE=; [ -s $CONF/preload ] && PRE=$(cat $CONF/preload)
+  # no tty0 but a tty1: tell Xorg which virtual terminal to use
+  if [ ! -c $TTYDIR/tty0 ] && [ -c $TTYDIR/tty1 ]; then XFLAGS="$XFLAGS vt1"; log "no tty0, using vt1"; fi
+  # From the first pan of the display, mtkfb uses the pixel format that X asks for, which is not the one the bootloader left.
+  # The text console (z380term) swaps red and blue for the bootloader's format, so after X it must not swap (console.sh reads this flag).
+  touch $PANNED
+  log "starting Xorg $DISP $XFLAGS${PRE:+ (preload $PRE)}"
+  LD_PRELOAD=$PRE Xorg $DISP $XFLAGS -nolisten tcp -ac -noreset -config $CONF/xorg.conf -logfile $XLOG -logverbose 6 >> $LOG 2>&1 &
+  XPID=$!
+  n=0
+  while [ $n -lt 30 ]; do
+    [ -S /tmp/.X11-unix/X0 ] && break
+    kill -0 "$XPID" 2>/dev/null || break
+    sleep 1; n=$((n+1))
+  done
+  if ! { [ -S /tmp/.X11-unix/X0 ] && kill -0 "$XPID" 2>/dev/null; }; then
+    log "Xorg did not come up (see $XLOG)"
+    # a preload library that stops X from starting must not lock the desktop out: take it away
+    [ -n "$PRE" ] && { rm -f $CONF/preload; log "removed $CONF/preload (it was: $PRE)"; }
+    return 1
+  fi
+  log "Xorg is up after ${n}s"
+  # the session (JWM: bar, menu, windows)
+  DISPLAY=$DISP sh $CONF/session.sh >> $LOG 2>&1 &
+  SPID=$!
+  log "session started (pid $SPID)"
+  return 0
+}
+
+supervise() {
+  WD=${1:-240}
+  BOOT=${2:-}
+  echo $$ > $FLAG
+  rm -f $KEEP $STOP $RESTART $SHPID
+  XPID=; SPID=
+  log "supervisor $$ started (watchdog ${WD}s${BOOT:+, boot start})"
+  trap 'log "supervisor got a signal"; revert; exit 1' HUP INT TERM
+  [ -n "$BOOT" ] && touch $KEEP
+
+  # 1. the text console off (init respawns console.sh, which waits while $FLAG names a live supervisor)
+  killall z380term 2>/dev/null
+  n=0; while pidof z380term > /dev/null 2>&1 && [ $n -lt 10 ]; do sleep 1; n=$((n+1)); done
+  if pidof z380term > /dev/null 2>&1; then killall -9 z380term 2>/dev/null; sleep 1; fi
+
+  # 2. a plain root shell on the serial line, so the T window stays usable
+  SER=; for c in /dev/ttyGS0 /dev/ttyGS1; do [ -c $c ] && { SER=$c; break; }; done
+  if [ -n "$SER" ]; then
+    setsid -c /bin/sh -c 'stty sane 2>/dev/null; echo $$ > /run/z380m-serial-shell.pid; exec /bin/sh -l' < $SER > $SER 2>&1 &
+    log "plain shell on $SER"
+  else
+    log "WARNING: no serial line found; the desktop will have no shell next to it"
+  fi
+
+  t=0
+  while :; do
+    # 3. X and the session
+    start_x || { revert; exit 1; }
+
+    # 4. wait: until Xorg or the session ends, "stop" or "restart-x" is requested, or the watchdog runs out
+    why=end
+    while :; do
+      sleep 1; t=$((t+1))
+      kill -0 "$XPID" 2>/dev/null || { log "Xorg exited"; break; }
+      kill -0 "$SPID" 2>/dev/null || { log "session exited"; break; }
+      [ -e $STOP ] && { log "stop requested"; break; }
+      [ -e $RESTART ] && { log "restart requested"; rm -f $RESTART; why=again; break; }
+      if [ ! -e $KEEP ] && [ $t -ge "$WD" ]; then log "watchdog: no 'keep' within ${WD}s"; break; fi
+      if [ -n "$BOOT" ] && [ $t -eq 60 ]; then rm -f $GUARD; log "boot start looks stable, guard cleared"; fi
+    done
+    [ "$why" = again ] || break
+    stop_x
+    sleep 1
+  done
+  revert
+  exit 0
+}
+
+service_file() {
+  cat <<'EOF'
+#!/sbin/openrc-run
+description="Touch desktop (Xorg + JWM) on the tablet screen"
+depend() {
+	after bootmisc localmount
+}
+start() {
+	ebegin "Starting the z380m desktop"
+	/usr/local/sbin/z380m-gui boot
+	eend 0
+}
+stop() {
+	ebegin "Stopping the z380m desktop"
+	/usr/local/sbin/z380m-gui stop
+	eend 0
+}
+EOF
+}
+
+case "${1:-status}" in
+  start)
+    [ "$(id -u)" = 0 ] || { echo "z380m-gui: run as root"; exit 1; }
+    command -v Xorg > /dev/null 2>&1 || { echo "z380m-gui: Xorg is not installed"; exit 1; }
+    [ -r $CONF/xorg.conf ] && [ -r $CONF/session.sh ] || { echo "z380m-gui: $CONF/xorg.conf or session.sh is missing"; exit 1; }
+    if alive $FLAG; then echo "z380m-gui: already running (pid $(cat $FLAG))"; exit 0; fi
+    WD=${2:-240}
+    echo "z380m-gui: starting the desktop. Look at the tablet screen."
+    echo "           In a few seconds this window turns into a plain shell: press Enter once."
+    echo "           To keep the desktop, tap Menu > KEEP this desktop on the tablet, or type   z380m-gui keep   within $WD s;"
+    echo "           otherwise the text console comes back by itself."
+    ( setsid "$SELF" --supervise "$WD" < /dev/null > /dev/null 2>&1 & )
+    ;;
+  boot)
+    # called by the OpenRC service at boot
+    command -v Xorg > /dev/null 2>&1 || { log "boot: Xorg is not installed"; exit 0; }
+    [ -r $CONF/xorg.conf ] && [ -r $CONF/session.sh ] || { log "boot: $CONF is incomplete"; exit 0; }
+    if [ -e $GUARD ]; then log "boot: guard $GUARD exists, previous automatic start did not finish; staying on the text console"; exit 0; fi
+    if alive $FLAG; then exit 0; fi
+    touch $GUARD; sync
+    ( setsid "$SELF" --supervise 0 boot < /dev/null > /dev/null 2>&1 & )
+    ;;
+  --supervise) supervise "$2" "$3" ;;
+  keep)
+    alive $FLAG || { echo "z380m-gui: not running"; exit 1; }
+    touch $KEEP; rm -f $CONF/first-run; log "keep confirmed"
+    echo "z380m-gui: ok, the desktop stays. Back to the console: z380m-gui stop" ;;
+  stop)
+    alive $FLAG || { echo "z380m-gui: not running"; rm -f $FLAG; exit 0; }
+    touch $STOP
+    echo "z380m-gui: stopping; the text console comes back in a few seconds"
+    n=0; while [ -e $FLAG ] && [ $n -lt 20 ]; do sleep 1; n=$((n+1)); done ;;
+  restart-x)
+    alive $FLAG || { echo "z380m-gui: not running (use: z380m-gui start)"; exit 1; }
+    touch $RESTART; log "restart-x requested"
+    echo "z380m-gui: restarting X and the desktop" ;;
+  swapcolors)
+    LIB=/usr/local/lib/z380m-fbfix.so
+    if [ -s $CONF/preload ]; then
+      rm -f $CONF/preload; msg="Colour fix OFF. Restarting the desktop."
+    elif [ -r $LIB ]; then
+      echo $LIB > $CONF/preload; msg="Colour fix ON (red and blue swapped back). Restarting the desktop."
+    else
+      notify "The colour fix is not installed ($LIB missing: no compiler was available). Report it (https://github.com/kaantcp)."; exit 1
+    fi
+    notify "$msg"
+    if alive $FLAG; then touch $RESTART; log "swapcolors: $msg"; else echo "(takes effect at the next start)"; fi ;;
+  status)
+    echo "z380m-gui version $VERSION"; echo "$Z380M_CREDIT"
+    if alive $FLAG; then echo "supervisor: running (pid $(cat $FLAG))"; else echo "supervisor: not running"; fi
+    if [ -e $KEEP ]; then echo "confirmed with keep: yes"; else echo "confirmed with keep: no"; fi
+    echo "Xorg: $(pidof Xorg 2>/dev/null || echo not running)"
+    echo "z380term: $(pidof z380term 2>/dev/null || echo not running)"
+    echo "touch screen for X: $(readlink $DEVIN/z380m-touch 2>/dev/null || echo not set)"
+    echo "touch bridge: $(pidof z380m-touchbridge 2>/dev/null || echo not running)$([ -x $BRIDGE ] || echo ' (not installed)')"
+    [ -r $TFLAGS ] && echo "touch flags: $(cat $TFLAGS)"
+    [ -e $PANNED ] && echo "display format changed by X since boot: yes (the text console then starts with z380term -n)"
+    [ -s $CONF/preload ] && echo "Xorg preload: $(cat $CONF/preload)"
+    if [ -e /etc/init.d/z380m-gui ]; then echo "start at boot: set up (service z380m-gui)"; else echo "start at boot: no"; fi
+    [ -e $GUARD ] && echo "boot guard: PRESENT (z380m-gui boot-reset to clear)" ;;
+  report)
+    {
+      echo "=== z380m-gui report"; echo "$Z380M_CREDIT"
+      echo "--- status"; "$SELF" status
+      echo "--- $LOG (last 60 lines)"; tail -n 60 $LOG 2>&1
+      echo "--- $XLOG: errors, warnings and the lines about video, input and virtual terminal"
+      grep -E '\(EE\)|\(WW\)|FBDEV|fbdev|evdev|VT|vt[0-9]|mask:|Faking|Configuring as|Found |ouch|Virtual size|depth|bpp|mode|z380m|Using input driver|input device|[Aa]xe|[Aa]xis|alibration' $XLOG 2>&1 | head -n 110
+      echo "--- touch bridge (from $LOG)"; grep -i -E 'touch|bridge|uinput|frame:' $LOG 2>&1 | tail -n 20
+      echo "--- input devices"; grep -B1 -A7 -i -E 'touch|z380m' /proc/bus/input/devices 2>&1 | head -n 40
+      echo "--- X clients"; ps 2>&1 | grep -E 'Xorg|jwm|svkbd|xterm|z380' | grep -v grep
+      echo "--- framebuffer"; fbset -fb /dev/fb0 2>&1 | head -n 12
+      echo "--- input nodes"; ls -l $DEVIN/ 2>&1 | head -n 24
+      echo "--- tty nodes"; ls -l $TTYDIR/tty0 $TTYDIR/tty1 2>&1; grep -E 'vtmaster|console' /proc/tty/drivers 2>&1
+      echo "--- display format"; fbset -fb /dev/fb0 2>&1 | grep -E 'rgba'; ls -l $PANNED 2>&1
+      echo "--- dmesg (last 15 lines)"; dmesg 2>&1 | tail -n 15
+      echo "=== end of report"
+    } 2>&1 | tee /root/gui-report.txt ;;
+  touchtest)
+    [ -x $BRIDGE ] || { echo "z380m-gui: $BRIDGE is not installed"; exit 1; }
+    tdev=$(real_touch); make_input_node "$tdev"
+    echo "Touch the screen now (${2:-8} s). Reading $DEVIN/$tdev ..."
+    "$BRIDGE" probe -i "$DEVIN/$tdev" -t "${2:-8}" ;;
+  boot-enable)
+    [ "$(id -u)" = 0 ] || { echo "z380m-gui: run as root"; exit 1; }
+    service_file > /etc/init.d/z380m-gui && chmod 755 /etc/init.d/z380m-gui
+    rc-update add z380m-gui default 2>&1
+    echo "z380m-gui: the desktop will start at every boot. Undo: z380m-gui boot-disable" ;;
+  boot-disable)
+    [ "$(id -u)" = 0 ] || { echo "z380m-gui: run as root"; exit 1; }
+    rc-update del z380m-gui default 2>&1
+    rm -f /etc/init.d/z380m-gui $GUARD
+    echo "z380m-gui: the desktop will not start at boot any more" ;;
+  boot-reset) rm -f $GUARD; echo "z380m-gui: boot guard cleared" ;;
+  *) echo "usage: z380m-gui start [SECONDS] | keep | stop | restart-x | swapcolors | status | report | touchtest [SECONDS] | boot-enable | boot-disable | boot-reset"; echo "$Z380M_CREDIT"; exit 2 ;;
+esac
+exit 0

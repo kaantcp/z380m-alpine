@@ -1,0 +1,217 @@
+#### EVIDENCE - terminal output from my own PC and tablet, October 2026.
+#### Content: USB RNDIS network: PC NAT helper up, tablet route, pings, apk update (28554 packages)
+#### Device identifiers replaced by <REDACTED>: android serial number, ASUS ISN, MediaTek ME_ID, DA randomid, eMMC CID (two spellings).
+#### For publication the PC's user and host name, its home folder, the name of the USB network interface (it contains a MAC address), MAC addresses and the GPT partition GUIDs were also replaced (user@pc, /home/user, enxXXXXXXXXXXXX, xx:xx:xx:xx:xx:xx, <REDACTED>). Everything else is as printed. Escape characters in the text are shown as the visible sign for ESC.
+
+user@pc:~/Downloads/unlock (3)/mtkclient$    ( setsid sh -c 'sleep 180; [ -e /tmp/usb-ok ] || z380m-usb acm' </dev/null >/dev/null 2>&1 & )
+   z380m-usb rndis-acm
+z380m-usb: command not found
+user@pc:~/Downloads/unlock (3)/mtkclient$ sudo /usr/bin/python3 -m serial.tools.miniterm --eol CR /dev/ttyACM0 115200
+--- Miniterm on /dev/ttyACM0  115200,8,N,1 ---
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
+   ( setsid sh -c 'sleep 180; [ -e /tmp/usb-ok ] || z380m-usb acm' </dev/null >/dev/null 2>
+
+
+&1 & )
+
+z380m:/#    z380m-usb rndis-acm
+
+z380m-usb: EXPERIMENTAL. Switching to RNDIS+ACM; the serial session will drop for a few seconds.
+
+           Log: /var/log/z380m-usb.log   (automatic fall-back to plain 'acm' after 25s without a network interface)
+
+z380m:/# ␛[6nException in thread rx:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+
+--- exit ---
+  File "/usr/lib/python3/dist-packages/serial/tools/miniterm.py", line 499, in reader
+    data = self.serial.read(self.serial.in_waiting or 1)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/serial/serialposix.py", line 595, in read
+    raise SerialException(
+serial.serialutil.SerialException: device reports readiness to read but returned no data (device disconnected or multiple access on port?)
+user@pc:~/Downloads/unlock (3)/mtkclient$    sudo bash ~/linux_alpine_v3/pc_usbnet.sh up
+tablet interface: enxXXXXXXXXXXXX   (USB ID / driver: 0e8d:2008 rndis_host)
++ nmcli device set enxXXXXXXXXXXXX managed no
++ ip link set enxXXXXXXXXXXXX up
++ ip addr replace 192.168.7.1/24 dev enxXXXXXXXXXXXX
++ echo 1 > /proc/sys/net/ipv4/ip_forward
++ nft -f -    # table ip z380m_usbnet: masquerade 192.168.7.0/24 when it leaves through anything but enxXXXXXXXXXXXX
+
+PC side is ready:  enxXXXXXXXXXXXX = 192.168.7.1/24, NAT for 192.168.7.0/24 through this PC's other interfaces.
+The tablet answers at 192.168.7.2.
+
+On the tablet (serial console):
+    ip route add default via 192.168.7.1
+    ping -c 3 192.168.7.1; ping -c 3 1.1.1.1; ping -c 3 dl-cdn.alpinelinux.org
+    apk update
+Undo on the PC:   sudo bash /home/user/linux_alpine_v3/pc_usbnet.sh down
+user@pc:~/Downloads/unlock (3)/mtkclient$    touch /tmp/usb-ok
+   ip route add default via 192.168.7.1
+   ping -c 3 192.168.7.1; ping -c 3 1.1.1.1; ping -c 3 dl-cdn.alpinelinux.org
+   apk update
+RTNETLINK answers: Operation not permitted
+PING 192.168.7.1 (192.168.7.1) 56(84) bytes of data.
+64 bytes from 192.168.7.1: icmp_seq=1 ttl=64 time=0.082 ms
+64 bytes from 192.168.7.1: icmp_seq=2 ttl=64 time=0.102 ms
+64 bytes from 192.168.7.1: icmp_seq=3 ttl=64 time=0.066 ms
+
+--- 192.168.7.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2031ms
+rtt min/avg/max/mdev = 0.066/0.083/0.102/0.014 ms
+PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=50 time=11.7 ms
+64 bytes from 1.1.1.1: icmp_seq=2 ttl=50 time=9.44 ms
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=50 time=11.6 ms
+
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 9.440/10.926/11.746/1.052 ms
+PING dl-cdn.alpinelinux.org (2a04:4e42:b::644) 56 data bytes
+64 bytes from 2a04:4e42:b::644: icmp_seq=1 ttl=50 time=21.1 ms
+64 bytes from 2a04:4e42:b::644: icmp_seq=2 ttl=50 time=19.6 ms
+64 bytes from 2a04:4e42:b::644: icmp_seq=3 ttl=50 time=17.6 ms
+
+--- dl-cdn.alpinelinux.org ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 17.570/19.419/21.116/1.451 ms
+Command 'apk' not found, did you mean:
+  command 'ark' from snap ark (26.04.3)
+  command 'awk' from deb gawk (1:5.2.1-2)
+  command 'awk' from deb mawk (1.3.4.20231126-1)
+  command 'awk' from deb original-awk (2023-11-27-1)
+  command 'apg' from deb apg (2.2.3.dfsg.1-5build2)
+  command 'ack' from deb ack (3.7.0-1)
+  command 'ark' from deb ark (4:23.08.4-0ubuntu1)
+  command 'apt' from deb apt (2.8.3)
+See 'snap info <snapname>' for additional versions.
+user@pc:~/Downloads/unlock (3)/mtkclient$    sudo /usr/bin/python3 -m serial.tools.miniterm --eol CR /dev/ttyACM0 115200
+--- Miniterm on /dev/ttyACM0  115200,8,N,1 ---
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
+
+
+z380m:/# 
+
+z380m:/# 
+
+z380m:/# 
+
+z380m:/# z380m -- Alpinz380m-boot.log ␛[␛[J
+
+/bin/sh: z380m: not found
+
+z380m:/# ␛[6n   rm -f /tmp/usb-ok; ( setsid sh -c 'sleep 600; [ -e /tmp/usb-ok ] || z380m-usb acm' </dev
+
+
+/null >/dev/null 2>&1 & )
+
+z380m:/#    z380m-usb rndis-acm
+
+z380m-usb: EXPERIMENTAL. Switching to RNDIS+ACM; the serial session will drop for a few seconds.
+
+           Log: /var/log/z380m-usb.log   (automatic fall-back to plain 'acm' after 25s without a network interface)
+
+z380m:/# ␛[6nException in thread rx:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+
+--- exit ---
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib/python3/dist-packages/serial/tools/miniterm.py", line 499, in reader
+    data = self.serial.read(self.serial.in_waiting or 1)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/serial/serialposix.py", line 595, in read
+    raise SerialException(
+serial.serialutil.SerialException: device reports readiness to read but returned no data (device disconnected or multiple access on port?)
+user@pc:~/Downloads/unlock (3)/mtkclient$    sudo /usr/bin/python3 -m serial.tools.miniterm --eol CR /dev/ttyACM0 115200
+--- Miniterm on /dev/ttyACM0  115200,8,N,1 ---
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
+   touch /tmp/usb-ok
+
+t /etc/resolv.conf; stat -c '%d %n' / /tmpz380m:/#    ip route add default via 192.168.7.1
+
+z380m:/#    ping -c 3 192.168.7.1
+
+PING 192.168.7.1 (192.168.7.1): 56 data bytes
+
+64 bytes from 192.168.7.1: seq=0 ttl=64 time=0.961 ms
+
+64 bytes from 192.168.7.1: seq=1 ttl=64 time=0.787 ms
+
+64 bytes from 192.168.7.1: seq=2 ttl=64 time=0.617 ms
+
+
+
+--- 192.168.7.1 ping statistics ---
+
+3 packets transmitted, 3 packets received, 0% packet loss
+
+round-trip min/avg/max = 0.617/0.788/0.961 ms
+
+z380m:/#    ping -c 3 1.1.1.1
+
+PING 1.1.1.1 (1.1.1.1): 56 data bytes
+
+64 bytes from 1.1.1.1: seq=0 ttl=49 time=8.847 ms
+
+64 bytes from 1.1.1.1: seq=1 ttl=49 time=14.587 ms
+
+64 bytes from 1.1.1.1: seq=2 ttl=49 time=11.422 ms
+
+
+
+--- 1.1.1.1 ping statistics ---
+
+3 packets transmitted, 3 packets received, 0% packet loss
+
+round-trip min/avg/max = 8.847/11.618/14.587 ms
+
+z380m:/#    ping -c 3 dl-cdn.alpinelinux.org
+
+PING dl-cdn.alpinelinux.org (151.101.34.132): 56 data bytes
+
+64 bytes from 151.101.34.132: seq=0 ttl=47 time=201.537 ms
+
+64 bytes from 151.101.34.132: seq=1 ttl=47 time=226.356 ms
+
+64 bytes from 151.101.34.132: seq=2 ttl=47 time=19.455 ms
+
+
+
+--- dl-cdn.alpinelinux.org ping statistics ---
+
+3 packets transmitted, 3 packets received, 0% packet loss
+
+round-trip min/avg/max = 19.455/149.116/226.356 ms
+
+z380m:/#    apk update
+
+␛7[fetch http://dl-cdn.alpinelinux.org/alpine/v3.24/main/aarch64/APKINDEX.tar.gz]␛8␛[0K␛7[fetch http://dl-cdn.alpinelinux.org/alpine/v3.24/community/aarch64/APKINDEX.tar.gz]␛8␛[0Kv3.24.2-99-gb6d19fe5cb6 [http://dl-cdn.alpinelinux.org/alpine/v3.24/main]
+
+v3.24.2-101-g3c2c2436e39 [http://dl-cdn.alpinelinux.org/alpine/v3.24/community]
+
+OK: 28554 distinct packages available
+
+z380m:/#    ip route; cat /etc/resolv.conf; stat -c '%d %n' / /tmp
+
+default via 192.168.7.1 dev rndis0 
+
+192.168.7.0/24 dev rndis0 proto kernel scope link src 192.168.7.2 
+
+# z380m: static resolvers; nothing rewrites this file -- edit as needed
+
+nameserver 1.1.1.1
+
+nameserver 9.9.9.9
+
+45849 /
+
+45849 /tmp
+
+z380m:/# ␛[6n

@@ -1,0 +1,18 @@
+PASS  table: identical to the logged tablet
+PASS  table: system offset moved
+PASS  table: total size changed
+PASS  table: lk missing
+PASS  table: extra partition
+PASS  table: two partitions swapped
+PASS  table: empty file
+PASS  table: CRLF line ends and a colour code
+PASS  table: file without a table (evidence/02)
+PASS  backup folder: complete
+PASS  backup folder: complete, no preloader file
+PASS  backup folder: nvram truncated
+PASS  backup folder: persist missing
+PASS  backup folder: preloader file wrong size
+PASS  backup folder: not a folder
+PASS  the table in check_gpt.py has 26 partitions and 23 of them are in the backup set
+
+16 checks, 0 failed

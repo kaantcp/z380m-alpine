@@ -1,0 +1,3 @@
+# --- z380m GUI mode (added for z380m-gui): z380term was stopped on purpose by z380m-gui; skip the "fails fast" fallback below
+if [ -s /run/z380m-gui ] && kill -0 "$(cat /run/z380m-gui)" 2>/dev/null; then exit 0; fi
+# --- end of GUI mode

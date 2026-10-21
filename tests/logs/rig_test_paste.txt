@@ -1,0 +1,28 @@
+PASS  A paste: session reached an end marker
+PASS  A paste: checksum accepted
+PASS  A paste: unpacked
+PASS  A paste: dry run finished
+PASS  A paste: install was NOT run
+PASS  A paste: all 13 files unpacked byte-identical
+PASS  A paste: log written
+PASS  A paste: terminal queries (ESC[6n) in the output: info only -> 1
+PASS  B blank lines + trailing spaces: still accepted
+PASS  C damaged paste: refused with PASTE DAMAGED
+PASS  C damaged paste: nothing unpacked
+PASS  C damaged paste: nothing installed
+PASS  D wrong window: refused
+PASS  D wrong window: no files written
+PASS  E truncated paste: shell waits at the > prompt
+PASS  E truncated paste: Ctrl-C brings the prompt back and the shell works
+PASS  E truncated paste: nothing installed
+PASS  F http + sh: dry run finished
+PASS  F http + sh: install was NOT run
+PASS  G terminal replies in the middle of the paste: still accepted
+PASS  H flow: install finished OK from the pasted files
+PASS  H flow: install exit code file says 0
+PASS  H flow: z380m-gui is installed and answers (status before any start)
+PASS  H flow: console.sh hook installed with a backup
+PASS  H flow: uninstall script restores the original console.sh and removes the files
+
+25 PASS, 25 checks, 0 failed
+exit=0

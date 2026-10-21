@@ -1,0 +1,1265 @@
+#### EVIDENCE - terminal output from my own PC and tablet, October 2026.
+#### Content: Alpine first-boot report from the tablet (miniterm): mounts, ps, ramdisk/boot/openrc logs, fb, input devices, USB gadget; then the first USB-network attempt
+#### Device identifiers replaced by <REDACTED>: android serial number, ASUS ISN, MediaTek ME_ID, DA randomid, eMMC CID (two spellings).
+#### For publication the PC's user and host name, its home folder, the name of the USB network interface (it contains a MAC address), MAC addresses and the GPT partition GUIDs were also replaced (user@pc, /home/user, enxXXXXXXXXXXXX, xx:xx:xx:xx:xx:xx, <REDACTED>). Everything else is as printed. Escape characters in the text are shown as the visible sign for ESC.
+
+user@pc:~/Downloads/unlock (3)/mtkclient$    sudo /usr/bin/python3 -m serial.tools.miniterm --eol CR /dev/ttyACM0 115200
+[sudo] password for user: 
+--- Miniterm on /dev/ttyACM0  115200,8,N,1 ---
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
+
+
+z380m:/# 
+
+z380m:/# 
+
+z380m:/# 
+
+z380m:/# z380m -- Alpin␛[␛[␛[J
+
+/bin/sh: z380m: not found
+
+z380m:/# ␛[6n
+
+z380m:/# ␛[6nj
+
+/bin/sh: j: not found
+
+z380m:/# ␛[6ncat /etc/alpine-release; uname -a; cat /proc/mounts; ps
+
+lass/android_usb/android0
+
+cat /proc/bus/input/devices3.24.2
+
+Linux z380m 3.18.35 #1 SMP PREEMPT Thu Aug 9 12:33:25 CST 2018 aarch64 Linux
+
+rootfs / rootfs rw 0 0
+
+proc /proc proc rw,relatime 0 0
+
+sysfs /sys sysfs rw,relatime 0 0
+
+tmpfs /tmp tmpfs rw,relatime 0 0
+
+tmpfs /dev tmpfs rw,nosuid,noexec,relatime,size=10240k,mode=755 0 0
+
+devpts /dev/pts devpts rw,relatime,mode=600 0 0
+
+/dev/part_system / ext4 rw,noatime,data=ordered 0 0
+
+tmpfs /dev/shm tmpfs rw,nosuid,nodev,relatime 0 0
+
+tmpfs /run tmpfs rw,nosuid,nodev,relatime,mode=755 0 0
+
+debugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime 0 0
+
+configfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime 0 0
+
+fusectl /sys/fs/fuse/connections fusectl rw,nosuid,nodev,noexec,relatime 0 0
+
+selinuxfs /sys/fs/selinux selinuxfs rw,relatime 0 0
+
+PID   USER     TIME  COMMAND
+
+    1 root      0:01 /sbin/init
+
+    2 root      0:00 [kthreadd]
+
+    3 root      0:00 [ksoftirqd/0]
+
+    4 root      0:00 [kworker/0:0]
+
+    5 root      0:00 [kworker/0:0H]
+
+    6 root      0:00 [kworker/u8:0]
+
+    7 root      0:00 [rcu_preempt]
+
+    8 root      0:00 [rcu_sched]
+
+    9 root      0:00 [rcu_bh]
+
+   10 root      0:00 [migration/0]
+
+   11 root      0:00 [migration/1]
+
+   12 root      0:00 [ksoftirqd/1]
+
+   13 root      0:00 [kworker/1:0]
+
+   14 root      0:00 [kworker/1:0H]
+
+   15 root      0:00 [migration/2]
+
+   16 root      0:00 [ksoftirqd/2]
+
+   17 root      0:00 [kworker/2:0]
+
+   18 root      0:00 [kworker/2:0H]
+
+   19 root      0:00 [migration/3]
+
+   20 root      0:00 [ksoftirqd/3]
+
+   21 root      0:00 [kworker/3:0]
+
+   22 root      0:00 [kworker/3:0H]
+
+   23 root      0:00 [khelper]
+
+   24 root      0:00 [perf]
+
+   25 root      0:00 [GCPU]
+
+   26 root      0:00 [update_tz_count]
+
+   27 root      0:00 [update_secureti]
+
+   28 root      0:00 [tz_cm_shrinker]
+
+   29 root      0:00 [writeback]
+
+   30 root      0:00 [crypto]
+
+   31 root      0:00 [bioset]
+
+   32 root      0:00 [kblockd]
+
+   33 root      0:00 [cmdq_auto_relea]
+
+   34 root      0:00 [cmdq_task]
+
+   35 root      0:00 [cmdq_resource]
+
+   36 root      0:00 [cmdq_auto_relea]
+
+   37 root      0:00 [cmdq_auto_relea]
+
+   38 root      0:00 [cmdq_auto_relea]
+
+   39 root      0:00 [cmdq_auto_relea]
+
+   40 root      0:00 [cmdq_auto_relea]
+
+   41 root      0:00 [cmdq_auto_relea]
+
+   42 root      0:00 [cmdq_auto_relea]
+
+   43 root      0:00 [cmdq_auto_relea]
+
+   44 root      0:00 [cmdq_auto_relea]
+
+   45 root      0:00 [cmdq_auto_relea]
+
+   46 root      0:00 [cmdq_auto_relea]
+
+   47 root      0:00 [cmdq_auto_relea]
+
+   48 root      0:00 [cmdq_auto_relea]
+
+   49 root      0:00 [cmdq_auto_relea]
+
+   50 root      0:00 [cmdq_auto_relea]
+
+   51 root      0:00 [cmdq_auto_relea]
+
+   52 root      0:00 [kworker/3:1]
+
+   53 root      0:00 [cfg80211]
+
+   54 root      0:00 [cfinteractive]
+
+   55 root      0:00 [ion_mm_heap]
+
+   56 root      0:00 [ion_mm_heap_for]
+
+   57 root      0:00 [kworker/1:1]
+
+   58 root      0:00 [kworker/2:1]
+
+   59 root      0:00 [kworker/0:1]
+
+   71 root      0:00 [kswapd0]
+
+   72 root      0:00 [fsnotify_mark]
+
+   73 root      0:00 [sdcardfs_asyn_w]
+
+   74 root      0:00 [sdcardfs_wq]
+
+   75 root      0:00 [fuse_log]
+
+   96 root      0:00 [hps_main]
+
+   97 root      0:00 [accdet]
+
+   98 root      0:00 [accdet_disable]
+
+  100 root      0:00 [accdet_eint]
+
+  101 root      0:00 [disp_switch_mod]
+
+  102 root      0:00 [ged_notify_sw_v]
+
+  103 root      0:00 [btif_rxd]
+
+  104 root      0:00 [kthermp]
+
+  105 root      0:00 [hang_detect]
+
+  106 root      0:00 [emi_mpu]
+
+  107 root      0:00 [MD32_REBOOT_WQ]
+
+  108 root      0:00 [irq/126-mt6323-]
+
+  109 root      0:00 [mbim_ether]
+
+  110 root      0:00 [mbim_ether_rx1]
+
+  111 root      0:00 [uether]
+
+  112 root      0:00 [uether_rx1]
+
+  113 root      0:00 [hall_sensor_wq]
+
+  114 root      0:00 [kworker/u8:2]
+
+  127 root      0:00 [otg_wq]
+
+  150 root      0:00 [eeprom_wq]
+
+  151 root      0:00 [cover_wq]
+
+  152 root      0:00 [cvbus_wq]
+
+  153 root      0:00 [smb345c_chargin]
+
+  154 root      0:00 [dm_bufio_cache]
+
+  155 root      0:00 [irq/105-]
+
+  156 root      0:00 [binder]
+
+  161 root      0:00 [ipv6_addrconf]
+
+  174 root      0:00 [deferwq]
+
+  175 root      0:00 [mmcqd/0]
+
+  176 root      0:00 [mmcqd/0boot0]
+
+  177 root      0:00 [mmcqd/0boot1]
+
+  178 root      0:00 [mmcqd/0rpmb]
+
+  179 root      0:00 [ddp_irq_log_kth]
+
+  180 root      0:00 [display_esd_che]
+
+  181 root      0:00 [display_check_a]
+
+  182 root      0:05 [frame_update_wo]
+
+  183 root      0:00 [decouple_fence_]
+
+  184 root      0:00 [display_idle_de]
+
+  185 root      0:00 [kworker/u9:0]
+
+  186 root      0:00 [kbase_job_fault]
+
+  187 root      0:00 [mali_aeewp]
+
+  188 root      0:00 [kworker/u9:1]
+
+  189 root      0:00 [sensor_polling]
+
+  190 root      0:00 [hwmsen_polling]
+
+  191 root      0:00 [accel_polling]
+
+  192 root      0:00 [mxt_wq]
+
+  193 root      0:00 [mag_polling]
+
+  194 root      0:00 [usb20_st_wq]
+
+  196 root      0:00 [entropy_thread]
+
+  197 root      0:00 [f_mtp]
+
+  198 root      0:00 [file-storage]
+
+  199 root      0:00 [mtk-tpd]
+
+  200 root      0:00 [elan_irq_wq]
+
+  201 root      0:00 [elan_wq]
+
+  202 root      0:00 [elan_update_wq]
+
+  203 root      0:00 [elan_ac_wq]
+
+  204 root      0:00 [irq/148-ekth326]
+
+  205 root      0:00 [atimer_wq]
+
+  206 root      0:00 [bat_thread_kthr]
+
+  207 root      0:00 [firstbat_wq]
+
+  208 root      0:00 [mt-wdk]
+
+  209 root      0:00 [wdtk-0]
+
+  210 root      0:00 [dumpmem_wq]
+
+  211 root      0:00 [wdtk-1]
+
+  212 root      0:00 [wdtk-2]
+
+  213 root      0:00 [wdtk-3]
+
+  214 root      0:00 [PTP_CTRL_MCUSYS]
+
+  232 root      0:00 [kworker/3:1H]
+
+  271 root      0:00 [kworker/2:1H]
+
+  272 root      0:00 [kworker/1:1H]
+
+  312 root      0:00 [kworker/0:1H]
+
+  313 root      0:00 [jbd2/mmcblk0p25]
+
+  314 root      0:00 [ext4-rsv-conver]
+
+  379 root      0:00 {console.sh} /bin/sh /etc/z380m/console.sh
+
+  383 root      0:00 /usr/local/bin/z380term -s /dev/ttyGS0 -- /bin/sh -l
+
+  387 root      0:00 /bin/sh -l
+
+ 1972 root      0:00 /sbin/syslogd -t -n
+
+ 2042 root      0:00 [kworker/0:2]
+
+ 2046 root      0:00 ps
+
+z380m:/# cat /var/log/z380m-ramdisk.log /var/log/z380m-boot.log /var/log/z380m-openrc.log
+
+2.31 init v3 start: kernel 3.18.35 aarch64, /dev=tmpfs
+
+2.31 cmdline: console=tty0 console=ttyMT0,921600n1 earlycon=uart8250,mmio32,0x11002000 root=/dev/ram vmalloc=496M androidboot.hardware=mt8163 bootopt=64S3,32N2,64N2 build_version=3 proj_id=0 hw_id=3 pcb_id=696 printk.disable_uart=1 bootprof.pl_t=5251 bootprof.lk_t=10692 boot_reason=0 androidboot.serialno=<REDACTED> androidboot.bootreason= androidboot.mode=main lk.ro.isn=<REDACTED> lk.ro.config.versatility=US lk.ro.config.CID=ASUS lk.ro.config.idcode=6A lk.atd.fuse.ready=TRUE
+
+2.32 fs support: ext4=yes tmpfs=yes devtmpfs=NO devpts=yes
+
+2.33 nodes: fb0=yes ptmx=yes input=event0 event1 event10 event11 event2 event3 event4 event5 event6 event7 event8 event9 
+
+2.34 gadget: functions=acm enable=1 state=DISCONNECTED
+
+2.35 serial console: /dev/ttyGS0
+
+2.35 == tap VOL+/VOL- or touch the screen within 5s for RESCUE ==
+
+7.37 looking for the 'system' partition (up to 30s)
+
+7.44 system: mmcblk0p25 start=1072424 sectors=7331840 dev=179:25
+
+7.45 mounted ext4 on /newroot
+
+7.45 marker ok: alpine 3.24.2 aarch64 built 2026-10-10T22:48:38Z
+
+7.47 userland smoke test (runs the Alpine busybox): smoke-ok
+
+7.47 root is writable
+
+7.52 mount --move spelling: -o move
+
+7.52 handing over: switch_root -c /dev/console /newroot /sbin/init
+
+7.55 expdb node ok (mmcblk0p14); log dumps enabled
+
+moved: sys dev proc
+
+[7.60] sysinit: start (release: z380m-alpine alpine 3.24.2 aarch64 )
+
+[7.62] sysinit: done
+
+[7.63] openrc: starting runlevels sysinit, boot, default
+
+[19.90] openrc: runlevels done
+
+[19.90] postboot: ---- boot summary ----
+
+-- release --
+
+z380m-alpine
+
+alpine 3.24.2 aarch64
+
+built 2026-10-10T22:48:38Z
+
+builder build_alpine_rootfs.py 1.0
+
+-- kernel --
+
+Linux z380m 3.18.35 #1 SMP PREEMPT Thu Aug 9 12:33:25 CST 2018 aarch64 Linux
+
+console=tty0 console=ttyMT0,921600n1 earlycon=uart8250,mmio32,0x11002000 root=/dev/ram vmalloc=496M androidboot.hardware=mt8163 bootopt=64S3,32N2,64N2 build_version=3 proj_id=0 hw_id=3 pcb_id=696 printk.disable_uart=1 bootprof.pl_t=5251 bootprof.lk_t=10692 boot_reason=0 androidboot.serialno=<REDACTED> androidboot.bootreason= androidboot.mode=main lk.ro.isn=<REDACTED> lk.ro.config.versatility=US lk.ro.config.CID=ASUS lk.ro.config.idcode=6A lk.atd.fuse.ready=TRUE
+
+-- mounts --
+
+rootfs / rootfs rw 0 0
+
+proc /proc proc rw,relatime 0 0
+
+sysfs /sys sysfs rw,relatime 0 0
+
+tmpfs /tmp tmpfs rw,relatime 0 0
+
+tmpfs /dev tmpfs rw,nosuid,noexec,relatime,size=10240k,mode=755 0 0
+
+devpts /dev/pts devpts rw,relatime,mode=600 0 0
+
+/dev/part_system / ext4 rw,noatime,data=ordered 0 0
+
+tmpfs /dev/shm tmpfs rw,nosuid,nodev,relatime 0 0
+
+tmpfs /run tmpfs rw,nosuid,nodev,relatime,mode=755 0 0
+
+debugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime 0 0
+
+configfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime 0 0
+
+fusectl /sys/fs/fuse/connections fusectl rw,nosuid,nodev,noexec,relatime 0 0
+
+selinuxfs /sys/fs/selinux selinuxfs rw,relatime 0 0
+
+-- OpenRC --
+
+Runlevel: nonetwork
+
+Runlevel: sysinit
+
+ dmesg                                                             [  started  ]
+
+ devfs                                                             [  started  ]
+
+ mdev                                                              [  started  ]
+
+Runlevel: boot
+
+ swclock                                                           [  started  ]
+
+ modules                                                           [  started  ]
+
+ hostname                                                          [  started  ]
+
+ sysctl                                                            [  started  ]
+
+ bootmisc                                                          [  started  ]
+
+ networking                                                        [  started  ]
+
+ syslog                                                            [  started  ]
+
+Runlevel: default
+
+Runlevel: shutdown
+
+ killprocs                                                         [  stopped  ]
+
+ mount-ro                                                          [  stopped  ]
+
+Dynamic Runlevel: hotplugged
+
+Dynamic Runlevel: needed/wanted
+
+ sysfs                                                             [  started  ]
+
+ fsck                                                              [  started  ]
+
+ root                                                              [  started  ]
+
+ localmount                                                        [  started  ]
+
+Dynamic Runlevel: manual
+
+-- network --
+
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default 
+
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+
+    inet 127.0.0.1/8 scope host lo
+
+       valid_lft forever preferred_lft forever
+
+    inet6 ::1/128 scope host 
+
+       valid_lft forever preferred_lft forever
+
+2: ifb0: <BROADCAST,NOARP> mtu 1500 qdisc noop state DOWN group default qlen 32
+
+    link/ether xx:xx:xx:xx:xx:xx brd ff:ff:ff:ff:ff:ff
+
+3: ifb1: <BROADCAST,NOARP> mtu 1500 qdisc noop state DOWN group default qlen 32
+
+    link/ether xx:xx:xx:xx:xx:xx brd ff:ff:ff:ff:ff:ff
+
+4: tunl0@NONE: <NOARP> mtu 1480 qdisc noop state DOWN group default 
+
+    link/ipip 0.0.0.0 brd 0.0.0.0
+
+5: sit0@NONE: <NOARP> mtu 1480 qdisc noop state DOWN group default 
+
+    link/sit 0.0.0.0 brd 0.0.0.0
+
+6: ip6tnl0@NONE: <NOARP> mtu 1452 qdisc noop state DOWN group default 
+
+    link/tunnel6 :: brd ::
+
+-- usb gadget (android_usb) --
+
+enable=1
+
+state=CONFIGURED
+
+functions=acm
+
+idVendor=0e8d
+
+idProduct=2007
+
+-- framebuffer --
+
+
+
+mode "800x1280-0"
+
+	# D: 0.000 MHz, H: 0.000 kHz, V: 0.000 Hz
+
+	geometry 800 1280 800 3840 32
+
+	timings 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295
+
+	accel false
+
+	rgba 8/0,8/8,8/16,8/24
+
+endmode
+
+
+
+fb0/name: mtkfb
+
+fb0/bits_per_pixel: 32
+
+fb0/stride: 3200
+
+fb0/virtual_size: 800,3840
+
+-- input devices --
+
+event0: ACCDET
+
+event1: mtk-kpd
+
+event10: m_fdn_input
+
+event11: elan-touchscreen
+
+event2: HALL_SENSOR
+
+event3: hwmdata
+
+event4: m_batch_input
+
+event5: m_alsps_input
+
+event6: m_acc_input
+
+event7: m_mag_input
+
+event8: m_step_c_input
+
+event9: m_shk_input
+
+-- other sysfs classes --
+
+net: ifb0 ifb1 ip6tnl0 lo sit0 tunl0 
+
+rtc: rtc0 
+
+power_supply: ac battery pack_ac pack_bat usb wireless 
+
+backlight: 
+
+leds: lcd-backlight 
+
+-- memory --
+
+              total        used        free      shared  buff/cache   available
+
+Mem:        2000192       54804     1918336          48       27052     1925200
+
+Swap:             0           0           0
+
+-- dmesg (last 40 lines) --
+
+[   19.298953]  (0)[1935:ifup]x23: 0000007f7dc54030 x22: 0000007f7dc45000 
+
+[   19.298963]  (0)[1935:ifup]x21: 000000000000012c x20: 0000007fd342dc78 
+
+[   19.298973]  (0)[1935:ifup]x19: 0000000000000794 x18: 0000007f7dc5f1d8 
+
+[   19.298983]  (0)[1935:ifup]x17: 0000007f7dc596e0 x16: 0000007f7dc59100 
+
+[   19.298993]  (0)[1935:ifup]x15: 0000007f7dc59950 x14: 0000000000000000 
+
+[   19.299003]  (0)[1935:ifup]x13: 6b6e696c2f676e2d x12: 0000000000001660 
+
+[   19.299013]  (0)[1935:ifup]x11: 0000007f7dc45c00 x10: 000000007fffffff 
+
+[   19.299023]  (0)[1935:ifup]x9 : 0000000000000000 x8 : 00000000000001b2 
+
+[   19.299033]  (0)[1935:ifup]x7 : 00000000ffffffd0 x6 : 0000000000000000 
+
+[   19.299043]  (0)[1935:ifup]x5 : 0000000000000000 x4 : 0000000000000000 
+
+[   19.299053]  (0)[1935:ifup]x3 : 0000000000000000 x2 : 0000000000000008 
+
+[   19.299062]  (0)[1935:ifup]x1 : 0000000000000000 x0 : 0000000000000794 
+
+[   19.299073]  (0)[1935:ifup]
+
+[   19.349835]  (1)[1935:ifup]ifup[1935]: syscall 434
+
+[   19.349849]  (1)[1935:ifup]Code: aa0503e4 a9051be5 aa0603e5 d4000001 (97fff65e) 
+
+[   19.349860]  (1)[1935:ifup]CPU: 1 PID: 1935 Comm: ifup Tainted: G        W      3.18.35 #1
+
+[   19.349866]  (1)[1935:ifup]Hardware name: MT8163 (DT)
+
+[   19.349874]  (1)[1935:ifup]task: ffffffc06e3e5e00 ti: ffffffc06e3d4000 task.ti: ffffffc06e3d4000
+
+[   19.349883]  (1)[1935:ifup]PC is at 0x7f7dc36684
+
+[   19.349889]  (1)[1935:ifup]LR is at 0x7f7dc32f30
+
+[   19.349897]  (1)[1935:ifup]pc : [<0000007f7dc36684>] lr : [<0000007f7dc32f30>] pstate: 80000000
+
+[   19.349903]  (1)[1935:ifup]sp : 0000007fd342db30
+
+[   19.349909]  (1)[1935:ifup]x29: 0000007fd342db30 x28: 0000000000000000 
+
+[   19.349920]  (1)[1935:ifup]x27: 0000000000000000 x26: 0000007f7dc59430 
+
+[   19.349931]  (1)[1935:ifup]x25: 0000007f7dc54030 x24: 0000007fd342dc78 
+
+[   19.349941]  (1)[1935:ifup]x23: 0000007f7dc54030 x22: 0000007f7dc45000 
+
+[   19.349951]  (1)[1935:ifup]x21: 000000000000012c x20: 0000007fd342dc78 
+
+[   19.349961]  (1)[1935:ifup]x19: 0000000000000795 x18: 0000007f7dc5f1d8 
+
+[   19.349971]  (1)[1935:ifup]x17: 0000007f7dc59640 x16: 0000007f7dc59100 
+
+[   19.349981]  (1)[1935:ifup]x15: 0000007f7dc599e0 x14: 0000000000000000 
+
+[   19.349991]  (1)[1935:ifup]x13: 6b6e696c2f676e2d x12: 0000000000001660 
+
+[   19.350001]  (1)[1935:ifup]x11: 0000007f7dc45c00 x10: 000000007fffffff 
+
+[   19.350011]  (1)[1935:ifup]x9 : 0000000000000000 x8 : 00000000000001b2 
+
+[   19.350021]  (1)[1935:ifup]x7 : 00000000ffffffd0 x6 : 0000000000000000 
+
+[   19.350031]  (1)[1935:ifup]x5 : 0000000000000000 x4 : 0000000000000000 
+
+[   19.350040]  (1)[1935:ifup]x3 : 0000000000000000 x2 : 0000000000000008 
+
+[   19.350050]  (1)[1935:ifup]x1 : 0000000000000000 x0 : 0000000000000795 
+
+[   19.350061]  (1)[1935:ifup]
+
+[   19.850998]  (0)[1981:openrc]Dump cpuinfo
+
+[   19.963830] -(1)[1992:cat][g_android][USB]state_show, state:CONFIGURED
+
+[20.01] postboot: kernel hotplug helper is '/sbin/mdev'
+
+[20.02] postboot: done
+
+== [7.63] openrc sysinit ==
+
+
+
+ * /proc is already mounted
+
+ * /run/lock: correcting mode
+
+ * /run/lock: correcting owner
+
+ * Clock skew detected with 'init.d'
+
+ * Adjusting mtime of '/run/openrc/deptree' to Sat Oct 10 22:48:29 2026
+
+
+
+ * WARNING: clock skew detected!
+
+ * Remounting tmpfs on /dev ... [ ok ]
+
+mknod: /dev/null: File exists
+
+ * Mounting debug filesystem ... [ ok ]
+
+ * Mounting config filesystem ... [ ok ]
+
+ * Mounting fuse control filesystem ... [ ok ]
+
+ * Mounting SELinux filesystem ... [ ok ]
+
+ * Starting busybox mdev ... [ ok ]
+
+ * Scanning hardware for mdev ...modprobe: can't change directory to '/lib/modules': No such file or directory
+
+mdev: can't create '': No such file or directory
+
+ [ ok ]
+
+   OpenRC 0.63.2 is starting up Linux 3.18.35 (aarch64)
+
+
+
+ * Caching service dependencies ... [ ok ]
+
+== [18.78] openrc sysinit finished, exit status 0 ==
+
+== [18.78] openrc boot ==
+
+ * WARNING: clock skew detected!
+
+ * Setting the local clock based on last shutdown time ... [ ok ]
+
+ * Loading modules ...modprobe: can't change directory to '/lib/modules': No such file or directory
+
+modprobe: can't change directory to '/lib/modules': No such file or directory
+
+ [ ok ]
+
+ * Checking local filesystems  ... [ ok ]
+
+ * Remounting filesystems ... [ ok ]
+
+ * Mounting local filesystems ... [ ok ]
+
+ * Configuring kernel parameters ...sysctl: error: 'kernel.unprivileged_bpf_disabled' is an unknown key
+
+ [ ok ]
+
+ * Creating user login records ... [ ok ]
+
+ * Setting hostname to z380m from /etc/hostname ... [ ok ]
+
+ * Starting networking ...
+
+ *   lo ... [ ok ]
+
+ * Starting busybox syslog ... [ ok ]
+
+== [19.84] openrc boot finished, exit status 0 ==
+
+== [19.84] openrc default ==
+
+ * WARNING: clock skew detected!
+
+== [19.90] openrc default finished, exit status 0 ==
+
+z380m:/# rc-status -a; df -h /; free -m
+
+Runlevel: ␛[1m␛[36mnonetwork␛[m
+
+Runlevel: ␛[1m␛[36msysinit␛[m
+
+ dmesg
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+ devfs
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+ mdev
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+Runlevel: ␛[1m␛[36mboot␛[m
+
+ swclock
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+ modules
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+ hostname
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+ sysctl
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+ bootmisc
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+ networking
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+ syslog
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+Runlevel: ␛[1m␛[36mdefault␛[m
+
+Runlevel: ␛[1m␛[36mshutdown␛[m
+
+ killprocs
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[31m  stopped  ␛[1m␛[34m]␛[m
+
+ mount-ro
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[31m  stopped  ␛[1m␛[34m]␛[m
+
+Dynamic Runlevel: ␛[1m␛[36mhotplugged␛[m
+
+Dynamic Runlevel: ␛[1m␛[36mneeded/wanted␛[m
+
+ sysfs
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+ fsck
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+ root
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+ localmount
+
+␛[A␛[86C ␛[1m␛[34m[␛[1m␛[32m  started  ␛[1m␛[34m]␛[m
+
+Dynamic Runlevel: ␛[1m␛[36mmanual␛[m
+
+Filesystem                Size      Used Available Use% Mounted on
+
+tmpfs                   487.6M     38.9M    433.3M   8% /tmp
+
+              total        used        free      shared  buff/cache   available
+
+Mem:           1953          53        1873           0          27        1880
+
+Swap:             0           0           0
+
+z380m:/# z380m-usb status; ls /sys/class/android_usb/android0
+
+enable         1
+
+state          CONFIGURED
+
+functions      acm
+
+idVendor       0e8d
+
+idProduct      2007
+
+bDeviceClass   2
+
+iManufacturer  MediaTek
+
+iProduct       Z380M-Alpine
+
+iSerial        z380m0001
+
+serial nodes : /dev/ttyGS0 /dev/ttyGS1 /dev/ttyGS2 /dev/ttyGS3 /dev/ttyGS4 /dev/ttyGS5 /dev/ttyGS6 /dev/ttyGS7 
+
+net devices  : ifb0 ifb1 ip6tnl0 lo sit0 tunl0 
+
+␛[0;0mbDeviceClass␛[m     ␛[1;34mf_acm␛[m            ␛[1;34mf_mass_storage␛[m   ␛[0;0mfunctions␛[m        ␛[0;0mlog␛[m
+
+␛[0;0mbDeviceProtocol␛[m  ␛[1;34mf_audio_source␛[m   ␛[1;34mf_mbim␛[m           ␛[0;0miManufacturer␛[m    ␛[1;34mpower␛[m
+
+␛[0;0mbDeviceSubClass␛[m  ␛[1;34mf_eem␛[m            ␛[1;34mf_midi␛[m           ␛[0;0miProduct␛[m         ␛[0;0mstate␛[m
+
+␛[0;0mbcdDevice␛[m        ␛[1;34mf_ffs␛[m            ␛[1;34mf_mtp␛[m            ␛[0;0miSerial␛[m          ␛[1;36msubsystem␛[m
+
+␛[0;0menable␛[m           ␛[1;34mf_gser␛[m           ␛[1;34mf_ptp␛[m            ␛[0;0midProduct␛[m        ␛[0;0muevent␛[m
+
+␛[1;34mf_accessory␛[m      ␛[1;34mf_hid␛[m            ␛[1;34mf_rndis␛[m          ␛[0;0midVendor␛[m
+
+z380m:/# cat /proc/bus/input/devices
+
+I: Bus=0019 Vendor=0000 Product=0000 Version=0000
+
+N: Name="ACCDET"
+
+P: Phys=
+
+S: Sysfs=/devices/virtual/input/input0
+
+U: Uniq=
+
+H: Handlers=event0 
+
+B: PROP=0
+
+B: EV=3
+
+B: KEY=40 0 0 0 0 0 0 1000000000 c000000000000 0
+
+
+
+I: Bus=0019 Vendor=2454 Product=6500 Version=0010
+
+N: Name="mtk-kpd"
+
+P: Phys=
+
+S: Sysfs=/devices/soc/10010000.keypad/input/input1
+
+U: Uniq=
+
+H: Handlers=event1 
+
+B: PROP=0
+
+B: EV=3
+
+B: KEY=1c000000000000 0
+
+
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+
+N: Name="HALL_SENSOR"
+
+P: Phys=/dev/input/lid_indev
+
+S: Sysfs=/devices/virtual/input/input2
+
+U: Uniq=
+
+H: Handlers=event2 
+
+B: PROP=0
+
+B: EV=21
+
+B: SW=1
+
+
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+
+N: Name="hwmdata"
+
+P: Phys=
+
+S: Sysfs=/devices/virtual/input/input3
+
+U: Uniq=
+
+H: Handlers=event3 
+
+B: PROP=0
+
+B: EV=5
+
+B: REL=6
+
+
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+
+N: Name="m_batch_input"
+
+P: Phys=
+
+S: Sysfs=/devices/virtual/input/input4
+
+U: Uniq=
+
+H: Handlers=event4 
+
+B: PROP=0
+
+B: EV=d
+
+B: REL=f1
+
+B: ABS=10f
+
+
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+
+N: Name="m_alsps_input"
+
+P: Phys=
+
+S: Sysfs=/devices/virtual/input/input5
+
+U: Uniq=
+
+H: Handlers=event5 
+
+B: PROP=0
+
+B: EV=d
+
+B: REL=6
+
+B: ABS=101
+
+
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+
+N: Name="m_acc_input"
+
+P: Phys=
+
+S: Sysfs=/devices/virtual/input/input6
+
+U: Uniq=
+
+H: Handlers=event6 
+
+B: PROP=0
+
+B: EV=d
+
+B: REL=c1
+
+B: ABS=107
+
+
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+
+N: Name="m_mag_input"
+
+P: Phys=
+
+S: Sysfs=/devices/virtual/input/input7
+
+U: Uniq=
+
+H: Handlers=event7 
+
+B: PROP=0
+
+B: EV=d
+
+B: REL=3c9
+
+B: ABS=17f
+
+
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+
+N: Name="m_step_c_input"
+
+P: Phys=
+
+S: Sysfs=/devices/virtual/input/input8
+
+U: Uniq=
+
+H: Handlers=event8 
+
+B: PROP=0
+
+B: EV=d
+
+B: REL=7
+
+B: ABS=100
+
+
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+
+N: Name="m_shk_input"
+
+P: Phys=
+
+S: Sysfs=/devices/virtual/input/input9
+
+U: Uniq=
+
+H: Handlers=event9 
+
+B: PROP=0
+
+B: EV=5
+
+B: REL=1
+
+
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+
+N: Name="m_fdn_input"
+
+P: Phys=
+
+S: Sysfs=/devices/virtual/input/input10
+
+U: Uniq=
+
+H: Handlers=event10 
+
+B: PROP=0
+
+B: EV=5
+
+B: REL=3
+
+
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+
+N: Name="elan-touchscreen"
+
+P: Phys=
+
+S: Sysfs=/devices/virtual/input/input12
+
+U: Uniq=
+
+H: Handlers=event11 
+
+B: PROP=0
+
+B: EV=b
+
+B: KEY=1000000000 0 7 f800000000000000 10000000000000 0
+
+B: ABS=261800001000000
+
+
+
+z380m:/# ␛[6nException in thread rx:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+
+--- exit ---
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib/python3/dist-packages/serial/tools/miniterm.py", line 499, in reader
+    data = self.serial.read(self.serial.in_waiting or 1)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/serial/serialposix.py", line 595, in read
+    raise SerialException(
+serial.serialutil.SerialException: device reports readiness to read but returned no data (device disconnected or multiple access on port?)
+user@pc:~/Downloads/unlock (3)/mtkclient$    ( setsid sh -c 'sleep 180; [ -e /tmp/usb-ok ] || z380m-usb acm' </dev/null >/dev/null 2>&1 & )
+   z380m-usb rndis-acm
+z380m-usb: command not found
+user@pc:~/Downloads/unlock (3)/mtkclient$ sudo /usr/bin/python3 -m serial.tools.miniterm --eol CR /dev/ttyACM0 115200
+--- Miniterm on /dev/ttyACM0  115200,8,N,1 ---
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
+   ( setsid sh -c 'sleep 180; [ -e /tmp/usb-ok ] || z380m-usb acm' </dev/null >/dev/null 2>
+
+
+&1 & )
+
+z380m:/#    z380m-usb rndis-acm
+
+z380m-usb: EXPERIMENTAL. Switching to RNDIS+ACM; the serial session will drop for a few seconds.
+
+           Log: /var/log/z380m-usb.log   (automatic fall-back to plain 'acm' after 25s without a network interface)
+
+z380m:/# ␛[6nException in thread rx:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+
+--- exit ---
+  File "/usr/lib/python3/dist-packages/serial/tools/miniterm.py", line 499, in reader
+    data = self.serial.read(self.serial.in_waiting or 1)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/serial/serialposix.py", line 595, in read
+    raise SerialException(
+serial.serialutil.SerialException: device reports readiness to read but returned no data (device disconnected or multiple access on port?)
+user@pc:~/Downloads/unlock (3)/mtkclient$    sudo bash ~/linux_alpine_v3/pc_usbnet.sh up
+tablet interface: enxXXXXXXXXXXXX   (USB ID / driver: 0e8d:2008 rndis_host)
++ nmcli device set enxXXXXXXXXXXXX managed no
++ ip link set enxXXXXXXXXXXXX up
++ ip addr replace 192.168.7.1/24 dev enxXXXXXXXXXXXX
++ echo 1 > /proc/sys/net/ipv4/ip_forward
++ nft -f -    # table ip z380m_usbnet: masquerade 192.168.7.0/24 when it leaves through anything but enxXXXXXXXXXXXX
+
+PC side is ready:  enxXXXXXXXXXXXX = 192.168.7.1/24, NAT for 192.168.7.0/24 through this PC's other interfaces.
+The tablet answers at 192.168.7.2.
+
+On the tablet (serial console):
+    ip route add default via 192.168.7.1
+    ping -c 3 192.168.7.1; ping -c 3 1.1.1.1; ping -c 3 dl-cdn.alpinelinux.org
+    apk update
+Undo on the PC:   sudo bash /home/user/linux_alpine_v3/pc_usbnet.sh down
+user@pc:~/Downloads/unlock (3)/mtkclient$    touch /tmp/usb-ok
+   ip route add default via 192.168.7.1
+   ping -c 3 192.168.7.1; ping -c 3 1.1.1.1; ping -c 3 dl-cdn.alpinelinux.org
+   apk update
+RTNETLINK answers: Operation not permitted
+PING 192.168.7.1 (192.168.7.1) 56(84) bytes of data.
+64 bytes from 192.168.7.1: icmp_seq=1 ttl=64 time=0.082 ms
+64 bytes from 192.168.7.1: icmp_seq=2 ttl=64 time=0.102 ms
+64 bytes from 192.168.7.1: icmp_seq=3 ttl=64 time=0.066 ms
+
+--- 192.168.7.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2031ms
+rtt min/avg/max/mdev = 0.066/0.083/0.102/0.014 ms
+PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=50 time=11.7 ms
+64 bytes from 1.1.1.1: icmp_seq=2 ttl=50 time=9.44 ms
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=50 time=11.6 ms
+
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 9.440/10.926/11.746/1.052 ms
+PING dl-cdn.alpinelinux.org (2a04:4e42:b::644) 56 data bytes
+64 bytes from 2a04:4e42:b::644: icmp_seq=1 ttl=50 time=21.1 ms
+64 bytes from 2a04:4e42:b::644: icmp_seq=2 ttl=50 time=19.6 ms
+64 bytes from 2a04:4e42:b::644: icmp_seq=3 ttl=50 time=17.6 ms
+
+--- dl-cdn.alpinelinux.org ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 17.570/19.419/21.116/1.451 ms
+Command 'apk' not found, did you mean:
+  command 'ark' from snap ark (26.04.3)
+  command 'awk' from deb gawk (1:5.2.1-2)
+  command 'awk' from deb mawk (1.3.4.20231126-1)
+  command 'awk' from deb original-awk (2023-11-27-1)
+  command 'apg' from deb apg (2.2.3.dfsg.1-5build2)
+  command 'ack' from deb ack (3.7.0-1)
+  command 'ark' from deb ark (4:23.08.4-0ubuntu1)
+  command 'apt' from deb apt (2.8.3)
+See 'snap info <snapname>' for additional versions.
+user@pc:~/Downloads/unlock (3)/mtkclient$ 
+

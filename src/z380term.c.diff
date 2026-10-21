@@ -1,0 +1,78 @@
+--- orig/z380term.c	2026-10-09 22:48:27.572278773 -0400
++++ z380term.c	2026-10-09 22:48:43.890619818 -0400
+@@ -5,7 +5,13 @@
+  * mirrors everything it prints to the tablet screen (/dev/fb0) and to a USB serial
+  * line (/dev/ttyGS*), and feeds bytes typed on the serial line to the command.
+  *
+- * usage: z380term [-f /dev/fb0] [-s /dev/ttyGS0] [--] [command args...]
++ * usage: z380term [-n] [-f /dev/fb0] [-s /dev/ttyGS0] [--] [command args...]
++ *
++ *   -n   do not swap red and blue. By default z380term swaps the red and blue
++ *        channel positions the driver reports, because on the Z380M (mtkfb)
++ *        the reported var offsets come out with red and blue exchanged on the
++ *        panel (confirmed on the tablet screen). The banner prints both the
++ *        reported and the used positions.
+  *
+  * Built-in 8x16 font: koi8x16 (X11 cyrillic fonts, public domain).
+  */
+@@ -305,6 +311,8 @@
+ static uint32_t *shadow = NULL;
+ static int roff = 16, goff = 8, boff = 0, aoff = 24;
+ static int rlen = 8, glen = 8, blen = 8, alen = 8;
++static int swaprb = 1;                       /* -n clears it */
++static int raw_roff = 16, raw_boff = 0;      /* as reported by the driver, for the banner */
+ static uint32_t pk[16];
+ 
+ static uint32_t pack(int r, int g, int b)
+@@ -324,7 +332,7 @@
+ static int cols, rows, cx, cy, cur_fg = 7, cur_bg = 0, bold, rev;
+ static int saved_x, saved_y, full_dirty = 1, last_cx = -1, last_cy = -1;
+ static int st, par[8], npar, priv;
+-static char fbinfo[160];
++static char fbinfo[256];
+ 
+ static void clear_range(int r, int c0, int c1)
+ {
+@@ -529,8 +537,15 @@
+ 		}
+ 		if (v.bits_per_pixel != 32)
+ 			fprintf(stderr, "z380term: warning: bpp=%u (only 32 supported)\n", v.bits_per_pixel);
+-		snprintf(fbinfo, sizeof fbinfo, "fb %dx%d bpp=%u R@%d G@%d B@%d A@%d/%d yoff=%u",
+-			 xres, yres, v.bits_per_pixel, roff, goff, boff, aoff, alen, v.yoffset);
++		raw_roff = roff; raw_boff = boff;
++		if (swaprb) {
++			int t = roff; roff = boff; boff = t;
++			t = rlen; rlen = blen; blen = t;
++		}
++		snprintf(fbinfo, sizeof fbinfo,
++			 "fb %dx%d bpp=%u reported R@%d G@%d B@%d A@%d/%d yoff=%u; used R@%d B@%d swaprb=%d",
++			 xres, yres, v.bits_per_pixel, raw_roff, goff, raw_boff, aoff, alen, v.yoffset,
++			 roff, boff, swaprb);
+ 		line_len = xres * 4;
+ 		if (ioctl(fbfd, FBIOGET_FSCREENINFO, &f) == 0 && f.line_length)
+ 			line_len = f.line_length;
+@@ -539,7 +554,13 @@
+ 		if (ioctl(fbfd, FBIOGET_FSCREENINFO, &f) == 0 && f.smem_len && f.smem_len < maplen)
+ 			maplen = f.smem_len;
+ 	} else {
+-		snprintf(fbinfo, sizeof fbinfo, "fb (no ioctl) %dx%d defaults BGRA", xres, yres);
++		raw_roff = roff; raw_boff = boff;
++		if (swaprb) {
++			int t = roff; roff = boff; boff = t;
++			t = rlen; rlen = blen; blen = t;
++		}
++		snprintf(fbinfo, sizeof fbinfo, "fb (no ioctl) %dx%d assumed R@%d B@%d swaprb=%d",
++			 xres, yres, roff, boff, swaprb);
+ 		line_len = xres * 4;
+ 		maplen = (size_t)line_len * yres;
+ 	}
+@@ -643,7 +664,8 @@
+ 	static char *defcmd[] = { "/bin/sh", NULL };
+ 	int i = 1;
+ 	for (; i < argc; i++) {
+-		if (!strcmp(argv[i], "-f") && i + 1 < argc) fbpath = argv[++i];
++		if (!strcmp(argv[i], "-n")) swaprb = 0;
++		else if (!strcmp(argv[i], "-f") && i + 1 < argc) fbpath = argv[++i];
+ 		else if (!strcmp(argv[i], "-s") && i + 1 < argc) serpath = argv[++i];
+ 		else if (!strcmp(argv[i], "--")) { i++; break; }
+ 		else break;

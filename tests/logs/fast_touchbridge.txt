@@ -1,0 +1,23 @@
+PASS  1 type B tap/drag/lift
+PASS  2 two fingers
+PASS  3 type A (first contact wins, empty frame = lift)
+PASS  4 mirror x and y
+PASS  4b mirror x only
+PASS  5 clamp to the panel range
+PASS  6 slot out of range
+PASS  7 SYN_DROPPED
+PASS  8 two taps at the same spot
+PASS  9 new tracking id in the same slot
+PASS  10 unchanged frames are silent
+PASS  11 truncated record at the end
+PASS  12 odd-sized pieces
+PASS  13 missing device -> exit 1 and a message
+PASS  13b unknown option -> exit 2
+PASS  13c version
+PASS  13d check without /dev/uinput fails cleanly
+PASS  14 probe summary
+PASS  14b probe with no touch
+PASS  14c probe, type A
+PASS  14d probe ends after its time on a silent device
+
+21 checks, 0 failed

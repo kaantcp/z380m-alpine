@@ -1,0 +1,40 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2026 kaantcp (https://github.com/kaantcp)
+#
+# Part of z380m-alpine: Alpine Linux on the ASUS ZenPad 8.0 (Z380M, MT8163).
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+# for more details. You should have received a copy of the GNU General
+# Public License along with this program (file LICENSE). If not, see
+# <https://www.gnu.org/licenses/>.
+
+Z380M_CREDIT="z380m-alpine by kaantcp - https://github.com/kaantcp"
+
+# z380m-colortest - shown in a window by the desktop on its first start: three bars to see whether red and blue are swapped
+bar() { # bar <colour-code> <text-colour-code> <label>
+  printf '  \033[%s;%sm%s\033[0m\n' "$1" "$2" "                                          "
+  printf '  \033[%s;%sm%s\033[0m\n' "$1" "$2" "$3"
+  printf '  \033[%s;%sm%s\033[0m\n\n' "$1" "$2" "                                          "
+}
+printf '\033[2J\033[H\n'
+echo "  COLOUR CHECK - each bar must look like its name"
+echo
+bar 41 97 "                  R E D                   "
+bar 42 30 "                G R E E N                 "
+bar 44 97 "                 B L U E                  "
+echo "  RED looks blue and BLUE looks red?"
+echo "     tap  Menu > Display > Fix colours"
+echo
+echo "  Colours are right, and the cursor follows your finger?"
+echo "     tap  Menu > KEEP this desktop"
+echo "     then close this window (button top right)"
+echo
+echo "  $Z380M_CREDIT"
+exec sleep 100000

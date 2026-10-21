@@ -1,0 +1,51 @@
+PASS  1 check mode: exit 0 and says CHECK DONE
+PASS  1 check mode: shows the survey (touch, VT, fit)
+PASS  1 check mode: installed nothing
+PASS  2 install: exit 0 and INSTALL OK
+PASS  2 install: packages installed under the virtual name
+PASS  2 install: /usr/local/sbin/z380m-gui present with mode 755
+PASS  2 install: /usr/local/bin/z380m-kbd present with mode 755
+PASS  2 install: /usr/local/bin/z380m-bright present with mode 755
+PASS  2 install: /usr/local/bin/z380m-colortest present with mode 755
+PASS  2 install: /etc/z380m/gui/xorg.conf present with mode 644
+PASS  2 install: /etc/z380m/gui/session.sh present with mode 755
+PASS  2 install: /etc/z380m/gui/jwmrc present with mode 644
+PASS  2 install: /etc/z380m/gui/Xresources present with mode 644
+PASS  2 install: /usr/local/src/z380m/fbfix.c present with mode 644
+PASS  2 install: first-run flag set
+PASS  2 install: console.sh has both hooks exactly once
+PASS  2 install: console.sh.orig is the untouched original
+PASS  2 install: console.sh keeps its mode and parses
+PASS  2 install: only the two hook blocks were added
+PASS  2 install: uninstall script written
+PASS  2 install: colour fix built and self-test saw a change
+PASS  2 install: the built library loads in a real musl process
+PASS  2 install: z380m-gui status runs
+PASS  2 install: summary names the next step
+PASS  3 re-run: exit 0
+PASS  3 re-run: console.sh says already patched and is unchanged in shape
+PASS  3 re-run: .orig still the original
+PASS  4 uninstall: exit 0
+PASS  4 uninstall: packages gone, world clean
+PASS  4 uninstall: console.sh back to the original
+PASS  4 uninstall: files gone
+PASS  5a no virtual terminal: stops with exit 1 and says why
+PASS  5a: nothing was changed
+PASS  5b /dev/tty0 exists although the driver list has no vtmaster: goes on
+PASS  5c network down: stops with the recipe
+PASS  5c: nothing was changed
+PASS  5d not enough space: stops and says so
+PASS  5d: nothing was changed
+PASS  5e required package missing: stops and names it
+PASS  5e: nothing was changed
+PASS  5f no touch screen: stops
+PASS  5f: nothing was changed
+PASS  5g wrong machine: stops at once
+PASS  5g: nothing was changed
+PASS  6a console.sh without the anchor lines: exit 5, file unchanged
+PASS  6b apk add fails (a package file is gone): exit 2, tells how to undo
+PASS  6c compiler fails: install still finishes, colour fix reported as not built
+PASS  6d no svkbd in the index: falls back to matchbox-keyboard
+
+48 checks, 0 failed
+exit=0

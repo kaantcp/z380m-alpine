@@ -1,0 +1,15 @@
+# z380m-alpine by kaantcp - https://github.com/kaantcp
+# source (relative to the repository root)          name inside the package
+installer/install.sh                           install.sh
+scripts/obsolete/z380m-gui.v1                  z380m-gui
+scripts/gui/z380m-kbd                          z380m-kbd
+scripts/gui/z380m-bright                       z380m-bright
+scripts/gui/z380m-colortest                    z380m-colortest
+scripts/gui/xorg.conf                          xorg.conf
+scripts/gui/session.sh                         session.sh
+scripts/gui/jwmrc                              jwmrc
+scripts/gui/Xresources                         Xresources
+scripts/gui/console_block_a.txt                console_block_a.txt
+scripts/gui/console_block_b.txt                console_block_b.txt
+scripts/gui/patch_console.sh                   patch_console.sh
+installer/shim/fbfix.c                         fbfix.c

@@ -1,0 +1,42 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2026 kaantcp (https://github.com/kaantcp)
+#
+# Part of z380m-alpine: Alpine Linux on the ASUS ZenPad 8.0 (Z380M, MT8163).
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+# for more details. You should have received a copy of the GNU General
+# Public License along with this program (file LICENSE). If not, see
+# <https://www.gnu.org/licenses/>.
+
+Z380M_CREDIT="z380m-alpine by kaantcp - https://github.com/kaantcp"
+
+# z380m-kbd - show or hide the on-screen keyboard (the "Keys" button on the bar and Menu > Keyboard on/off)
+export DISPLAY=:0
+K=
+for k in svkbd-mobile-intl svkbd-mobile svkbd-mobile-plain svkbd-en matchbox-keyboard; do
+  if command -v "$k" > /dev/null 2>&1; then K=$k; break; fi
+done
+if [ -z "$K" ]; then
+  K=$(ls /usr/bin/svkbd-* 2> /dev/null | head -n 1); K=${K##*/}
+fi
+[ -n "$K" ] || { echo "z380m-kbd: no on-screen keyboard is installed" >&2; exit 1; }
+# already shown: hide it (stop it)
+if pidof "$K" > /dev/null 2>&1; then killall "$K"; exit 0; fi
+case "$K" in
+  svkbd*)
+    # -d: dock window that does not take the keyboard focus from the application. If this svkbd does not know -d it
+    # exits at once; then it is started without the flag.
+    "$K" -d > /dev/null 2>&1 &
+    sleep 1
+    pidof "$K" > /dev/null 2>&1 || "$K" > /dev/null 2>&1 &
+    ;;
+  *) "$K" > /dev/null 2>&1 & ;;
+esac
+exit 0
